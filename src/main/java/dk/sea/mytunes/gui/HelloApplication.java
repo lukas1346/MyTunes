@@ -1,4 +1,4 @@
-package dk.sea.mytunes;
+package dk.sea.mytunes.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
