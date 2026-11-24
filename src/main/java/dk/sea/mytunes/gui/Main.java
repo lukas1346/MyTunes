@@ -1,5 +1,7 @@
 package dk.sea.mytunes.gui;
 
+import dk.sea.mytunes.gui.Controller.PlaylistViewController;
+import dk.sea.mytunes.gui.Controller.SongViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,8 +21,11 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void loadSongView() throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("/dk/sea/mytunes/SongView.fxml")));
+    public static void loadSongView(boolean isAddMode) throws Exception {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/SongView.fxml"));
+        Parent root = loader.load();
+        SongViewController controller = loader.getController();
+        controller.setIsAddMode(isAddMode);
         Stage stage = new Stage();
         stage.setTitle("MyTunes");
         stage.setScene(new Scene(root));
@@ -28,8 +33,11 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void loadPlaylistView() throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml")));
+    public static void loadPlaylistView(boolean isAddMode) throws Exception {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml"));
+        Parent root = loader.load();
+        PlaylistViewController controller = loader.getController();
+        controller.setIsAddMode(isAddMode);
         Stage stage = new Stage();
         stage.setTitle("MyTunes");
         stage.setScene(new Scene(root));
