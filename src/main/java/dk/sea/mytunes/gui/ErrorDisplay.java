@@ -1,4 +1,4 @@
 package dk.sea.mytunes.gui;
 
-public class Errordisplay {
+public class ErrorDisplay {
 }
