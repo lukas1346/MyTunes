@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/dk/sea/mytunes/dal/PlaylistDAO.java" value="6162a417-1995-406e-acd2-343d265ccc63" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dk/sea/mytunes/dal/SongDAO.java" value="6162a417-1995-406e-acd2-343d265ccc63" />
+  </component>
+</project>
