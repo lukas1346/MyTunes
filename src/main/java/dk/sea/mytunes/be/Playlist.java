@@ -7,7 +7,7 @@ public class Playlist {
 
     private int playlistId;
     private String name;
-    private List<PlaylistSong> songs;
+    private List<Song> songs;
 
     public Playlist() {
         this.songs = new ArrayList<>();
@@ -40,11 +40,11 @@ public class Playlist {
         this.name = name;
     }
 
-    public List<PlaylistSong> getSongs() {
+    public List<Song> getSongs() {
         return songs;
     }
 
-    public void setSongs(List<PlaylistSong> songs) {
+    public void setSongs(List<Song> songs) {
         this.songs = songs;
     }
 }
