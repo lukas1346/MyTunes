@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.sea.mytunes.gui.Controller.MainViewController">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="16.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="84.0" prefWidth="161.0" spacing="8.0">
+               <children>
+                  <Button mnemonicParsing="false">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/back.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="84.0" layoutY="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/play.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="114.0" layoutY="32.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                           <image>
+                              <Image url="@../../../images/back.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
+               <children>
+                  <Pane prefHeight="72.0" prefWidth="97.0" />
+                  <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                     <children>
+                        <Label fx:id="lblCurrentSongTitle" text="Current song title" />
+                        <Label fx:id="lblCurrentArtist" layoutX="10.0" layoutY="44.0" text="Current artist" />
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="84.0" prefWidth="338.0" spacing="4.0">
+               <children>
+                  <Label text="0:00" />
+                  <Slider prefHeight="14.0" prefWidth="253.0" />
+                  <Label layoutX="284.0" layoutY="44.0" text="0:00" />
+               </children>
+            </HBox>
+            <Slider layoutX="442.0" layoutY="45.0" prefHeight="14.0" prefWidth="120.0" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="84.0" prefWidth="290.0" spacing="8.0">
+               <children>
+                  <TextField fx:id="txtFilter" prefHeight="26.0" prefWidth="229.0" promptText="Filter by title or artist..." />
+                  <Button fx:id="btnFilter" mnemonicParsing="false" text="Filter" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="700.0" prefWidth="200.0" spacing="16.0">
+         <children>
+            <VBox prefHeight="684.0" prefWidth="300.0" spacing="8.0">
+               <children>
+                  <Label text="PLAYLISTS" />
+                  <TableView fx:id="tblPlaylists" prefHeight="600.0" prefWidth="300.0">
+                    <columns>
+                      <TableColumn prefWidth="100.0" text="Name" />
+                      <TableColumn prefWidth="100.0" text="Songs" />
+                        <TableColumn prefWidth="100.0" text="Time" />
+                    </columns>
+                  </TableView>
+                  <HBox alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="300.0" spacing="8.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onNewPlaylistClick" text="New..." />
+                        <Button layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#onEditPlaylistClick" text="Edit..." />
+                        <Button layoutX="62.0" layoutY="24.0" mnemonicParsing="false" onAction="#onDeletePlaylistClick" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="684.0" prefWidth="300.0" spacing="8.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="119.0" text="SONGS IN PLAYLIST" />
+                        <Label fx:id="lblCurrentPlaylistTitle" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="200.0" text="Study Focus" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="tblPlaylists1" prefHeight="600.0" prefWidth="300.0">
+                     <columns>
+                        <TableColumn prefWidth="100.0" text="Name" />
+                        <TableColumn prefWidth="100.0" text="Songs" />
+                        <TableColumn prefWidth="100.0" text="Time" />
+                     </columns>
+                  </TableView>
+                  <HBox alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="300.0" spacing="8.0">
+                     <children>
+                        <Button fx:id="btnMoveDownSong" maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveDownSongClick" prefHeight="32.0">
+                           <graphic>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../images/up-arrow.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnMoveUpSong" layoutX="10.0" layoutY="24.0" maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveUpSongClick" prefHeight="32.0">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                                 <image>
+                                    <Image url="@../../../images/up-arrow.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnDeleteSongPlaylist" layoutX="62.0" layoutY="24.0" mnemonicParsing="false" onAction="#onDeleteSongPlaylist" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Button fx:id="btnMoveDownSong1" maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveDownSongClick" prefHeight="32.0">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0">
+                     <image>
+                        <Image url="@../../../images/up-arrow.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <VBox layoutX="326.0" layoutY="10.0" prefHeight="684.0" prefWidth="490.0" spacing="8.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="119.0" text="ALL SONGS" />
+                        <Label fx:id="lblCurrentPlaylistTitle1" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="371.0" text="48 Songs" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="tblPlaylists11" prefHeight="596.0" prefWidth="373.0">
+                     <columns>
+                        <TableColumn prefWidth="140.0" text="Name" />
+                        <TableColumn prefWidth="140.0" text="Songs" />
+                        <TableColumn prefWidth="140.0" text="Category" />
+                        <TableColumn prefWidth="70.0" text="Time" />
+                     </columns>
+                  </TableView>
+                  <HBox alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="300.0" spacing="8.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onNewSongClick" text="New..." />
+                        <Button layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#onEditSongClick" text="Edit..." />
+                        <Button layoutX="62.0" layoutY="24.0" mnemonicParsing="false" onAction="#onDeleteSongClick" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</VBox>
