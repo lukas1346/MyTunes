@@ -54,6 +54,12 @@ public class Song {
         this.category = category;
     }
 
+    public String formatDuration() {
+        int minutes = duration / 60;
+        int seconds = duration % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
     public int getDuration() {
         return duration;
     }
