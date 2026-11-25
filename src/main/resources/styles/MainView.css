@@ -149,3 +149,16 @@ Label{
 .playlist-song-list .list-cell:selected {
     -fx-background-color: #243b31;
 }
+
+/* DIALOG VIEWS */
+
+.dialog-heading{
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-input{
+    -fx-background-color: #262b30;
+    -fx-text-fill: #d0d5da;
+    -fx-font-size: 14px;
+}

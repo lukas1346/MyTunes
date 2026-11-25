@@ -8,38 +8,38 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.sea.mytunes.gui.Controller.SongViewController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.sea.mytunes.gui.Controller.SongViewController" styleClass="container" stylesheets="/styles/MainView.css">
    <padding>
       <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
    </padding>
    <children>
-      <Label fx:id="lblHeading" text="New Song">
+      <Label fx:id="lblHeading" text="New Song" styleClass="dialog-heading">
          <VBox.margin>
             <Insets bottom="16.0" />
          </VBox.margin>
       </Label>
-      <HBox fx:id="txtTitle" alignment="CENTER_LEFT" prefHeight="48.0" prefWidth="552.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="48.0" prefWidth="552.0">
          <children>
             <Label prefHeight="18.0" prefWidth="161.0" text="Title" />
-            <TextField prefHeight="26.0" prefWidth="418.0" />
+            <TextField prefHeight="26.0" prefWidth="418.0" fx:id="txtTitle" styleClass="dialog-input" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="34.0" layoutY="52.0" prefHeight="48.0" prefWidth="552.0">
          <children>
             <Label prefHeight="18.0" prefWidth="161.0" text="Artist" />
-            <TextField fx:id="txtArtist" prefHeight="26.0" prefWidth="418.0" />
+            <TextField fx:id="txtArtist" prefHeight="26.0" prefWidth="418.0" styleClass="dialog-input" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="34.0" layoutY="100.0" prefHeight="48.0" prefWidth="552.0">
          <children>
             <Label prefHeight="18.0" prefWidth="161.0" text="Category" />
-            <TextField fx:id="txtCategory" prefHeight="26.0" prefWidth="418.0" />
+            <TextField fx:id="txtCategory" prefHeight="26.0" prefWidth="418.0" styleClass="dialog-input"/>
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="34.0" layoutY="148.0" prefHeight="48.0" prefWidth="552.0">
          <children>
             <Label prefHeight="18.0" prefWidth="161.0" text="Time" />
-            <TextField fx:id="txtTime" prefHeight="26.0" prefWidth="418.0" />
+            <TextField fx:id="txtTime" prefHeight="26.0" prefWidth="418.0" styleClass="dialog-input"/>
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="34.0" layoutY="196.0" prefHeight="48.0" prefWidth="552.0">
@@ -47,16 +47,16 @@
             <Label prefHeight="18.0" prefWidth="148.0" text="File" />
             <HBox alignment="CENTER_LEFT" prefHeight="48.0" prefWidth="406.0" spacing="8.0">
                <children>
-                  <TextField fx:id="txtFilePath" prefHeight="26.0" prefWidth="271.0" />
-                  <Button mnemonicParsing="false" onAction="#onChooseClick" prefHeight="26.0" prefWidth="70.0" text="Choose..." />
+                  <TextField fx:id="txtFilePath" prefHeight="26.0" prefWidth="271.0" styleClass="dialog-input" />
+                  <Button mnemonicParsing="false" onAction="#onChooseClick" prefHeight="26.0" prefWidth="70.0" text="Choose..." styleClass="secondary-btn" />
                </children>
             </HBox>
          </children>
       </HBox>
       <HBox alignment="BOTTOM_RIGHT" layoutX="34.0" layoutY="260.0" prefHeight="48.0" prefWidth="552.0" spacing="8.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancelClick" text="Cancel" />
-            <Button layoutX="10.0" layoutY="21.0" mnemonicParsing="false" onAction="#onSaveClick" text="Save" />
+            <Button mnemonicParsing="false" onAction="#onCancelClick" text="Cancel" styleClass="secondary-btn" />
+            <Button layoutX="10.0" layoutY="21.0" mnemonicParsing="false" onAction="#onSaveClick" text="Save" styleClass="primary-btn"/>
          </children>
       </HBox>
    </children>
