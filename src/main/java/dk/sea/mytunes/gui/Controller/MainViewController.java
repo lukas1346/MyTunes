@@ -137,6 +137,8 @@ public class MainViewController implements Initializable {
 
         startSliderTime();
         tblPlaylists.setItems(playlistModel.getObservablePlaylists());
+        tblSongs.setItems(songModel.getObservableSongs());
+        lblSongAmount.setText(tblSongs.getItems().size() + " Songs");
     }
 
     @FXML
@@ -177,17 +179,23 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNewSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(true);
+        Main.loadSongView(true, null, songModel);
     }
 
     @FXML
     private void onEditSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(false);
+        Main.loadSongView(false, selectedSong, songModel);
     }
 
     @FXML
     private void onDeleteSongClick(ActionEvent actionEvent) {
-
+        if (selectedSong != null) {
+            try {
+                songModel.deleteSong(selectedSong);
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @FXML
@@ -211,7 +219,6 @@ public class MainViewController implements Initializable {
     }
 
     private void updatePlaylistInfo(Playlist playlist) {
-        lblSongAmount.setText(playlist.getSongs().size() + " Songs");
         lblCurrentPlaylistTitle.setText(playlist.getName());
     }
 

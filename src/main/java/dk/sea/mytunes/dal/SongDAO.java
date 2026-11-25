@@ -31,10 +31,10 @@ public class SongDAO implements ISongDataAccess{
         try(Connection connection = new DBConnector().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, song.getTitle());
-            preparedStatement.setString(1, song.getArtist());
-            preparedStatement.setString(1, song.getCategory());
-            preparedStatement.setInt(1, song.getDuration());
-            preparedStatement.setString(1, song.getFilePath());
+            preparedStatement.setString(2, song.getArtist());
+            preparedStatement.setString(3, song.getCategory());
+            preparedStatement.setInt(4, song.getDuration());
+            preparedStatement.setString(5, song.getFilePath());
 
             preparedStatement.executeUpdate();
 

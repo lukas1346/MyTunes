@@ -12,13 +12,11 @@ import java.sql.SQLException;
 
 public class PlaylistModel {
     private ObservableList<Playlist> observablePlaylists;
-    private ObservableList<Song> observableSongsInPlaylist;
     PlaylistManager playlistManager;
 
     public PlaylistModel() {
         playlistManager = new PlaylistManager();
         observablePlaylists = FXCollections.observableArrayList();
-        observableSongsInPlaylist = FXCollections.observableArrayList();
         try {
             observablePlaylists.addAll(playlistManager.getAllPlaylists());
         } catch (SQLException | IOException e) {
@@ -30,13 +28,12 @@ public class PlaylistModel {
         return observablePlaylists;
     }
 
-    public boolean createPlaylist(Playlist playlist) throws SQLException, IOException {
+    public Playlist createPlaylist(Playlist playlist) throws SQLException, IOException {
         Playlist newPlaylist = playlistManager.createPlaylist(playlist);
         if (newPlaylist != null) {
             observablePlaylists.add(newPlaylist);
-            return true;
         }
-        return false;
+        return newPlaylist;
     }
 
     public void updatePlaylist(Playlist playlist) throws SQLException, IOException {

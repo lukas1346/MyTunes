@@ -24,7 +24,7 @@ public class MusicPlayer {
             Media mediaSong = new Media(songFilePath.toURI().toString());
             mediaPlayer = new MediaPlayer(mediaSong);
             mediaPlayer.setOnEndOfMedia(() -> {
-                if(autoPlay) {
+                if (autoPlay) {
                     playNextSong();
                 }
             });
@@ -46,12 +46,13 @@ public class MusicPlayer {
     }
 
     public void playNextSong() {
-        if(playlistList == null) {return;}
+        if (playlistList == null) {
+            return;
+        }
         if (currentSongIndex < playlistList.size() - 1) {
             currentSongIndex++;
             playSong(playlistList.get(currentSongIndex));
-        }
-        else if (currentSongIndex == playlistList.size() - 1) {
+        } else if (currentSongIndex == playlistList.size() - 1) {
             currentSongIndex = 0;
             playSong(playlistList.get(currentSongIndex));
         }
@@ -110,8 +111,7 @@ public class MusicPlayer {
         if (currentSongIndex > 0) {
             currentSongIndex--;
             playSong(playlistList.get(currentSongIndex));
-        }
-        else if (currentSongIndex == 0) {
+        } else if (currentSongIndex == 0) {
             currentSongIndex = playlistList.size() - 1;
             playSong(playlistList.get(currentSongIndex));
         }
@@ -137,7 +137,6 @@ public class MusicPlayer {
             tempMedia.dispose();
         });
     }
-
 
     private void stopSong() {
         if (mediaPlayer != null) {

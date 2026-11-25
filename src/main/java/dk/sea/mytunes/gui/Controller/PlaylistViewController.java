@@ -47,7 +47,7 @@ public class PlaylistViewController implements Initializable {
         if (validateFields()) {
             if (isAddMode) {
                 Playlist playlist = new Playlist(txtName.getText());
-                if (playlistModel.createPlaylist(playlist)) {
+                if (playlistModel.createPlaylist(playlist) != null) {
                     closeWindow(actionEvent);
                 }
             } else {
