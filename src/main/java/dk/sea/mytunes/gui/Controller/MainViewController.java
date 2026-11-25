@@ -24,31 +24,52 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
-    @FXML private Label lblCurrentSongTime;
-    @FXML private Label lblTotalSongLength;
-    @FXML private Slider sliderTime;
-    @FXML private Slider sliderVolume;
-    @FXML private Label lblCurrentSongTitle;
-    @FXML private Label lblCurrentArtist;
-    @FXML private TextField txtFilter;
-    @FXML private Button btnFilter;
+    @FXML
+    private Label lblCurrentSongTime;
+    @FXML
+    private Label lblTotalSongLength;
+    @FXML
+    private Slider sliderTime;
+    @FXML
+    private Slider sliderVolume;
+    @FXML
+    private Label lblCurrentSongTitle;
+    @FXML
+    private Label lblCurrentArtist;
+    @FXML
+    private TextField txtFilter;
+    @FXML
+    private Button btnFilter;
 
-    @FXML private ListView<Song> lstSongsInPlaylists;
-    @FXML private Label lblCurrentPlaylistTitle;
-    @FXML private TableView<Playlist> tblPlaylists;
-    @FXML private TableColumn<Playlist, String> colPlaylistName;
-    @FXML private TableColumn<Playlist, Integer> colPlaylistSongs;
-    @FXML private TableColumn<Playlist, String> colPlaylistTime;
-    @FXML private TableView<Song> tblSongs;
-    @FXML private TableColumn<Song, String> colSongName;
-    @FXML private TableColumn<Song, String> colSongs;
-    @FXML private TableColumn<Song, String> colCategory;
-    @FXML private TableColumn<Song, String> colSongTime;
-    @FXML private Label lblSongAmount;
+    @FXML
+    private ListView<Song> lstSongsInPlaylists;
+    @FXML
+    private Label lblCurrentPlaylistTitle;
+    @FXML
+    private TableView<Playlist> tblPlaylists;
+    @FXML
+    private TableColumn<Playlist, String> colPlaylistName;
+    @FXML
+    private TableColumn<Playlist, Integer> colPlaylistSongs;
+    @FXML
+    private TableColumn<Playlist, String> colPlaylistTime;
+    @FXML
+    private TableView<Song> tblSongs;
+    @FXML
+    private TableColumn<Song, String> colSongName;
+    @FXML
+    private TableColumn<Song, String> colSongs;
+    @FXML
+    private TableColumn<Song, String> colCategory;
+    @FXML
+    private TableColumn<Song, String> colSongTime;
+    @FXML
+    private Label lblSongAmount;
 
     private Song selectedSong;
     private Playlist selectedPlaylist;
@@ -91,55 +112,52 @@ public class MainViewController implements Initializable {
 
         tblPlaylists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                try {
-                    if(selectedPlaylist == newValue) {
-                        loadPlaylistSongs(selectedPlaylist);
-                    }
-                    else {
-                        selectedPlaylist = newValue;
-                    }
-                } catch (Exception e) {
-                    ErrorDisplay.displayError(e);
-                }
+                loadPlaylistSongs(newValue);
+
             }
         });
 
         lstSongsInPlaylists.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
-            if(selectedSongInPlaylist == newValue) {
+            if (selectedSongInPlaylist == newValue) {
                 playSelectedPlaylistSong(selectedSongInPlaylist);
-            }
-            else {
+            } else {
                 selectedSongInPlaylist = newValue;
             }
         }));
 
         tblSongs.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                if(selectedSong == newValue) {
+                if (selectedSong == newValue) {
                     playSelectedSong(selectedSong);
-                }
-                else {
+                } else {
                     selectedSong = newValue;
                 }
             }
         });
 
         startSliderTime();
+        tblPlaylists.setItems(playlistModel.getObservablePlaylists());
     }
 
     @FXML
     private void onNewPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(true);
+        Main.loadPlaylistView(true, playlistModel, null);
     }
 
     @FXML
     private void onEditPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(false);
+        Main.loadPlaylistView(false, playlistModel, selectedPlaylist);
     }
 
     @FXML
     private void onDeletePlaylistClick(ActionEvent actionEvent) {
-
+        if (selectedPlaylist != null) {
+            try {
+                playlistModel.deletePlaylist(selectedPlaylist);
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @FXML
@@ -198,6 +216,11 @@ public class MainViewController implements Initializable {
     }
 
     private void loadPlaylistSongs(Playlist playlist) {
+        try {
+            lstSongsInPlaylists.setItems(playlistModel.getSongsInPlaylist(playlist));
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
         updatePlaylistInfo(playlist);
     }
 
@@ -208,10 +231,10 @@ public class MainViewController implements Initializable {
     private void startSliderTime() {
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), event -> {
-                    if(musicModel.isPlaying()) {
+                    if (musicModel.isPlaying()) {
                         double totalTime = musicModel.getCurrentSong().getDuration();
                         double currentTime = musicModel.getCurrentTime();
-                        sliderTime.setValue((currentTime/totalTime) * 1000);
+                        sliderTime.setValue((currentTime / totalTime) * 1000);
                         lblCurrentSongTime.setText(formatDuration(currentTime));
                         lblTotalSongLength.setText(formatDuration(totalTime));
                     }

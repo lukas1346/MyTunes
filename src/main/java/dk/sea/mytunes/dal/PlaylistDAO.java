@@ -52,7 +52,7 @@ public class PlaylistDAO implements IPlaylistDataAccess {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, playlist.getName());
-            preparedStatement.setInt(1, playlist.getPlaylistId());
+            preparedStatement.setInt(2, playlist.getPlaylistId());
 
             preparedStatement.executeUpdate();
         }

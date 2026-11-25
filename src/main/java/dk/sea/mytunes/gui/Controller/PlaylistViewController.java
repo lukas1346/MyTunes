@@ -22,17 +22,21 @@ public class PlaylistViewController implements Initializable {
     private TextField txtName;
 
     private PlaylistModel playlistModel;
-
+    private Playlist selectedPlaylist;
     // boolean to determine whether the user is adding a song or editing a song.
     private boolean isAddMode;
 
     public PlaylistViewController() {
-        playlistModel = new PlaylistModel();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblHeading.setText(isAddMode ? "Add Playlist" : "Edit Playlist");
+        if (isAddMode) {
+            lblHeading.setText("Add Song");
+        } else {
+            lblHeading.setText("Edit Song");
+            txtName.setText(selectedPlaylist != null ? selectedPlaylist.getName() : "");
+        }
     }
 
     public void onCancelClick(ActionEvent actionEvent) {
@@ -41,20 +45,17 @@ public class PlaylistViewController implements Initializable {
 
     public void onSaveClick(ActionEvent actionEvent) throws SQLException, IOException {
         if (validateFields()) {
-            Playlist playlist = new Playlist(txtName.getText());
             if (isAddMode) {
+                Playlist playlist = new Playlist(txtName.getText());
                 if (playlistModel.createPlaylist(playlist)) {
                     closeWindow(actionEvent);
                 }
             } else {
-                playlistModel.updatePlaylist(playlist);
+                selectedPlaylist.setName(txtName.getText());
+                playlistModel.updatePlaylist(selectedPlaylist);
                 closeWindow(actionEvent);
             }
         }
-    }
-
-    public void setIsAddMode(boolean bool) {
-        isAddMode = bool;
     }
 
     private boolean validateFields() {
@@ -65,5 +66,19 @@ public class PlaylistViewController implements Initializable {
         Node node = (Node) actionEvent.getSource();
         Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
+    }
+
+    public void setContext(boolean isAddMode, PlaylistModel playlistModel, Playlist selectedPlaylist) {
+        this.isAddMode = isAddMode;
+        this.playlistModel = playlistModel;
+        this.selectedPlaylist = selectedPlaylist;
+
+        if (isAddMode) {
+            lblHeading.setText("New Playlist");
+            txtName.clear();
+        } else {
+            lblHeading.setText("Edit Playlist");
+            txtName.setText(selectedPlaylist != null ? selectedPlaylist.getName() : "");
+        }
     }
 }
