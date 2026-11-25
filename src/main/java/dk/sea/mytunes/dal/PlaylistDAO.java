@@ -37,11 +37,9 @@ public class PlaylistDAO implements IPlaylistDataAccess {
 
 
             try(ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-                if(resultSet.next()) {
-                    createdPlaylist = new Playlist(resultSet.getInt("PlaylistId"), playlist.getName());
+                if (resultSet.next()) {
+                    createdPlaylist = new Playlist(resultSet.getInt(1), playlist.getName());
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException("Could not retrieve generated movie id.");
             }
         }
         return createdPlaylist;

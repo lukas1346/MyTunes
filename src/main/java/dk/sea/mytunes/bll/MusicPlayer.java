@@ -57,6 +57,17 @@ public class MusicPlayer {
         }
     }
 
+    public boolean isPlaying() {
+        return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+    }
+
+    public Song getCurrentSong() {
+        if (playlistList != null && currentSongIndex >= 0 && currentSongIndex < playlistList.size()) {
+            return playlistList.get(currentSongIndex);
+        }
+        return null;
+    }
+
     public void pause() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
