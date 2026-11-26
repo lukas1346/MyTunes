@@ -196,8 +196,10 @@ public class MainViewController implements Initializable {
         if (selectedPlaylist == null || selectedSong == null) {
             return;
         }
+        Song songToMove = selectedSong;
         try {
-            playlistModel.updateSongPosition(selectedPlaylist, selectedSong, false);
+            playlistModel.moveSongPosition(selectedPlaylist, songToMove, false);
+            highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -208,11 +210,19 @@ public class MainViewController implements Initializable {
         if (selectedPlaylist == null || selectedSong == null) {
             return;
         }
+        Song songToMove = selectedSong;
         try {
-            playlistModel.updateSongPosition(selectedPlaylist, selectedSong, true);
+            playlistModel.moveSongPosition(selectedPlaylist, selectedSong, true);
+            highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void highlightSelectedSong(Song songToMove){
+        int newIndex = lstSongsInPlaylists.getItems().indexOf(songToMove);
+        lstSongsInPlaylists.getSelectionModel().clearSelection();
+        lstSongsInPlaylists.getSelectionModel().select(newIndex);
     }
 
     @FXML

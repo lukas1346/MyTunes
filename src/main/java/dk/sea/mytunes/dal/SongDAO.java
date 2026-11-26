@@ -88,7 +88,7 @@ public class SongDAO implements ISongDataAccess{
             preparedStatement.setString(3, song.getCategory());
             preparedStatement.setInt(4, song.getDuration());
             preparedStatement.setString(5, song.getFilePath());
-            preparedStatement.setInt(6, song.getSongId());
+            preparedStatement.setInt(6, song.getId());
 
             preparedStatement.executeUpdate();
         }
@@ -99,7 +99,7 @@ public class SongDAO implements ISongDataAccess{
         String sql = "DELETE FROM dbo.Songs WHERE SongId = ?";
         try (Connection connection = new DBConnector().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, song.getSongId());
+            preparedStatement.setInt(1, song.getId());
             preparedStatement.executeUpdate();
         }
     }
@@ -110,7 +110,7 @@ public class SongDAO implements ISongDataAccess{
         Song songById = null;
         try (Connection connection = new DBConnector().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, song.getSongId());
+            preparedStatement.setInt(1, song.getId());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {

@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class PlaylistModel {
     private ObservableList<Playlist> observablePlaylists;
@@ -29,7 +31,10 @@ public class PlaylistModel {
     public ObservableList<Playlist> getObservablePlaylists() {
         return observablePlaylists;
     }
-    public ObservableList<Song> getObservableListSongsInPlaylist() {return observableListSongsInPlaylist;}
+
+    public ObservableList<Song> getObservableListSongsInPlaylist() {
+        return observableListSongsInPlaylist;
+    }
 
     public Playlist createPlaylist(Playlist playlist) throws SQLException, IOException {
         Playlist newPlaylist = playlistManager.createPlaylist(playlist);
@@ -65,8 +70,14 @@ public class PlaylistModel {
         observableListSongsInPlaylist.remove(song);
     }
 
-    public void updateSongPosition(Playlist playlist, Song song, boolean up) throws SQLException, IOException {
-        playlistManager.updateSongPosition(playlist, song, up);
-        getSongsInPlaylist(playlist);
+    public void moveSongPosition(Playlist playlist, Song song, boolean up) throws SQLException, IOException {
+        int index = observableListSongsInPlaylist.indexOf(song);
+        if (index < 0) return;
+        int indexToSwapWith = up ? index - 1 : index + 1;
+        if (indexToSwapWith < 0 || indexToSwapWith >= observableListSongsInPlaylist.size()) {
+            return;
+        }
+        playlistManager.moveSong(playlist, song, up);
+        Collections.swap(observableListSongsInPlaylist, index, indexToSwapWith);
     }
 }

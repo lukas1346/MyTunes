@@ -19,8 +19,8 @@ public class PlaylistDAO implements IPlaylistDataAccess {
     public List<Playlist> getAllPlaylists() throws IOException, SQLException {
         String sql = "SELECT PlaylistId, Name FROM dbo.Playlists";
         List<Playlist> playlists = new ArrayList<>();
-        try (Connection connection = dbConnector.getConnection()) {
-            Statement statement = connection.createStatement();
+        try (Connection connection = dbConnector.getConnection();
+             Statement statement = connection.createStatement();) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 playlists.add(createPlaylistFromResult(resultSet));
@@ -34,12 +34,11 @@ public class PlaylistDAO implements IPlaylistDataAccess {
     public Playlist createPlaylist(Playlist playlist) throws IOException, SQLException {
         String sql = "INSERT INTO dbo.Playlists (Name) VALUES(?)";
         Playlist createdPlaylist = null;
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dbConnector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, playlist.getName());
 
             preparedStatement.executeUpdate();
-
 
             try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
                 if (resultSet.next()) {
@@ -53,11 +52,11 @@ public class PlaylistDAO implements IPlaylistDataAccess {
     @Override
     public void updatePlaylist(Playlist playlist) throws IOException, SQLException {
         String sql = "UPDATE dbo.Playlists SET Name = ? WHERE PlaylistId = ?";
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, playlist.getName());
-            preparedStatement.setInt(2, playlist.getPlaylistId());
+            preparedStatement.setInt(2, playlist.getId());
 
             preparedStatement.executeUpdate();
         }
@@ -66,9 +65,9 @@ public class PlaylistDAO implements IPlaylistDataAccess {
     @Override
     public void deletePlaylist(Playlist playlist) throws IOException, SQLException {
         String sql = "DELETE FROM dbo.Playlists WHERE PlaylistId = ?";
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, playlist.getPlaylistId());
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, playlist.getId());
             preparedStatement.executeUpdate();
         }
     }
@@ -82,8 +81,8 @@ public class PlaylistDAO implements IPlaylistDataAccess {
                 ORDER BY position
                 """;
         List<Song> playlistSongs = new ArrayList<>();
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, playlistId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -97,12 +96,12 @@ public class PlaylistDAO implements IPlaylistDataAccess {
 
     @Override
     public void addSongToPlaylist(int playlistId, int songId) throws SQLException, IOException {
-        int position = getLastPosition(playlistId) + 1;
 
         String sql = "INSERT INTO PlaylistSongs (playlistId, songId, position) VALUES (?, ?, ?)";
 
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int position = getLastPosition(connection, playlistId) + 1;
 
             preparedStatement.setInt(1, playlistId);
             preparedStatement.setInt(2, songId);
@@ -115,70 +114,55 @@ public class PlaylistDAO implements IPlaylistDataAccess {
     public void removeSongFromPlaylist(int playlistId, int songId) throws IOException, SQLException {
         String sql = "DELETE FROM PlaylistSongs WHERE playlistId = ? AND songId = ?";
 
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, playlistId);
             preparedStatement.setInt(2, songId);
             preparedStatement.executeUpdate();
+            reorderPlaylistSongs(connection, playlistId);
         }
-        reorderPlaylistSongs(playlistId);
     }
 
     @Override
-    public void swapSongs(Playlist playlist, int originalPosition, int positionToSwap, boolean moveUp) throws IOException, SQLException {
-        int tempPosition = getLastPosition(playlist.getPlaylistId()) +1;
-        moveSongToPosition(playlist.getPlaylistId(), originalPosition, tempPosition); // set the song in a temp position
-        moveSongToPosition(playlist.getPlaylistId(), positionToSwap, originalPosition); // move the upper/lower song up/down
-        moveSongToPosition(playlist.getPlaylistId(), tempPosition, positionToSwap); // move the original song to the free space
-    }
+    public void swapSongPosition(int playlistId, int originalPosition, int positionToSwapWith) throws IOException, SQLException {
+        String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND toPosition = ?";
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
 
-    private void reorderPlaylistSongs(int playlistId) throws IOException, SQLException {
-        String sql = """
-                        SET NOCOUNT ON; -- Stops execution from returning messages
-                        SET XACT_ABORT ON; -- If something goes wrong in the middle of the execution it rolls back
-                
-                        DECLARE @PlaylistId INT = ?; -- declares a variable
-                
-                        BEGIN TRANSACTION; -- all the CRUD should be in one uncommited block
-                
-                        UPDATE PlaylistSongs
-                        SET Position = Position + 1000000 -- Avoids unique constraints
-                        WHERE PlaylistId = @PlaylistId;
-                
-                        WITH OrderedSongs AS (
-                            SELECT
-                                SongId,
-                                -- ROW_NUMBER() orders rows into 1, 2 ,3, ...
-                                -- Over just asks in what order the rows should be numbered by
-                                ROW_NUMBER() over (
-                                    ORDER BY Position
-                                    ) AS NewPosition
-                            FROM PlaylistSongs
-                            WHERE PlaylistId = @PlaylistId
-                        ) -- Ordered songs creates a new column called NewPosition that has all the new numbered rows
-                        UPDATE ps -- updates the PlaylistSongs table
-                        SET Position = os.NewPosition -- changes the position in PlaylistSongs to the new ordered positions
-                        FROM PlaylistSongs ps
-                        INNER JOIN OrderedSongs os
-                        ON ps.SongId = os.SongId -- tells how the rows should match from os and ps
-                        WHERE ps.PlaylistId = @PlaylistId;
-                
-                        COMMIT TRANSACTION;
-                """;
+            int tempPosition = getLastPosition(connection, playlistId);
+            updatePosition(ps, playlistId, originalPosition, tempPosition);
+            updatePosition(ps, playlistId, positionToSwapWith, originalPosition);
+            updatePosition(ps, playlistId, tempPosition, positionToSwapWith);
 
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            preparedStatement.setInt(1, playlistId);
-            preparedStatement.execute();
+            connection.commit();
         }
     }
 
-    private int getLastPosition(int playlistId) throws SQLException, IOException {
+    private void updatePosition(PreparedStatement ps, int playlistId, int oldPosition, int newPosition) throws SQLException {
+        ps.setInt(1, newPosition);
+        ps.setInt(2, playlistId);
+        ps.setInt(3, oldPosition);
+    }
+
+    private void reorderPlaylistSongs(Connection connection, int playlistId) throws IOException, SQLException {
+        List<Song> songs = getSongsInPlaylist(playlistId);
+        String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND SongId = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            for (int i = 0; i < songs.size(); i++) {
+                preparedStatement.setInt(1, i + 1);
+                preparedStatement.setInt(2, playlistId);
+                preparedStatement.setInt(3, songs.get(i).getId());
+                preparedStatement.executeUpdate();
+            }
+        }
+    }
+
+    private int getLastPosition(Connection connection, int playlistId) throws SQLException, IOException {
         String sql = "SELECT MAX(Position) FROM PlaylistSongs WHERE PlaylistId = ?";
-        try (Connection connection = dbConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 
             preparedStatement.setInt(1, playlistId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -206,19 +190,5 @@ public class PlaylistDAO implements IPlaylistDataAccess {
                 resultSet.getInt("Duration"),
                 resultSet.getString("FilePath")
         );
-    }
-
-    private void moveSongToPosition(int playlistId, int originalPosition, int targetPosition) {
-        String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND Position = ?";
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, targetPosition);
-            ps.setInt(2, playlistId);
-            ps.setInt(3, originalPosition);
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

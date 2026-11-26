@@ -35,25 +35,24 @@ public class PlaylistManager {
     }
 
     public List<Song> getSongsInPlaylist(Playlist playlist) throws SQLException, IOException {
-        playlist.setSongs(playlistDAO.getSongsInPlaylist(playlist.getPlaylistId()));
+        playlist.setSongs(playlistDAO.getSongsInPlaylist(playlist.getId()));
         return playlist.getSongs();
     }
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
-        playlistDAO.addSongToPlaylist(playlist.getPlaylistId(), song.getSongId());
+        playlistDAO.addSongToPlaylist(playlist.getId(), song.getId());
         playlist.getSongs().add(song);
     }
 
     public void removeSongFromPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
-        playlistDAO.removeSongFromPlaylist(playlist.getPlaylistId(), song.getSongId());
-        playlist.getSongs().removeIf(s -> s.getSongId() == song.getSongId());
+        playlistDAO.removeSongFromPlaylist(playlist.getId(), song.getId());
+        playlist.getSongs().removeIf(s -> s.getId() == song.getId());
     }
 
-    public void updateSongPosition(Playlist playlist, Song song, boolean moveUp) throws SQLException, IOException {
+    public void moveSong(Playlist playlist, Song song, boolean moveUp) throws SQLException, IOException {
         int originalPosition = playlist.getSongs().indexOf(song) + 1;
-        if (originalPosition == 1 && moveUp) return;
-        if (originalPosition == playlist.getSongs().size() && !moveUp) return;
         int positionToSwap = moveUp ? originalPosition - 1 : originalPosition + 1;
-        playlistDAO.swapSongs(playlist, originalPosition, positionToSwap, moveUp);
+        if (originalPosition <= 0 || positionToSwap < 0 || positionToSwap >= playlist.getSongs().size()) return;
+        playlistDAO.swapSongPosition(playlist.getId(), originalPosition, positionToSwap);
     }
 }

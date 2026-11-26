@@ -24,7 +24,7 @@ public class Playlist {
         this.songs = new ArrayList<>();
     }
 
-    public int getPlaylistId() {
+    public int getId() {
         return playlistId;
     }
 

@@ -22,7 +22,7 @@ public class Song {
         this(-1,title,artist,category, duration,filePath);
     }
 
-    public int getSongId() {
+    public int getId() {
         return songId;
     }
 
