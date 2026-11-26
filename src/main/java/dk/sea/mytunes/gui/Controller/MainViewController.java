@@ -147,12 +147,28 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNewPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(true, playlistModel, null);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml"));
+        Parent root = loader.load();
+        PlaylistViewController controller = loader.getController();
+        controller.setContext(true, playlistModel, null);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
     private void onEditPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(false, playlistModel, selectedPlaylist);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml"));
+        Parent root = loader.load();
+        PlaylistViewController controller = loader.getController();
+        controller.setContext(false, playlistModel, selectedPlaylist);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
@@ -183,12 +199,28 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNewSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(true, null, songModel);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/SongView.fxml"));
+        Parent root = loader.load();
+        SongViewController controller = loader.getController();
+        controller.setContext(true, null, songModel);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
     private void onEditSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(false, selectedSong, songModel);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/SongView.fxml"));
+        Parent root = loader.load();
+        SongViewController controller = loader.getController();
+        controller.setContext(false, selectedSong, songModel);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
