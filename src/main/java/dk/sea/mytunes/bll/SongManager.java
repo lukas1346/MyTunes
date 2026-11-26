@@ -2,6 +2,7 @@
 package dk.sea.mytunes.bll;
 
 import dk.sea.mytunes.be.Song;
+import dk.sea.mytunes.bll.util.SongSearcher;
 import dk.sea.mytunes.dal.ISongDataAccess;
 import dk.sea.mytunes.dal.SongDAO;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class SongManager {
 
+    private SongSearcher songSearcher = new SongSearcher();
     private final ISongDataAccess songDAO;
 
     public SongManager() {
@@ -25,8 +27,9 @@ public class SongManager {
         return songDAO.createSong(song);
     }
 
-    public List<Song> searchSongs(String query) throws SQLException, IOException {
-        return songDAO.searchSongs(query);
+    public List<Song> searchSongs(String query) throws IOException, SQLException {
+        List<Song> songs = getAllSongs();
+        return songSearcher.search(songs, query);
     }
 
     public void updateSong(Song song) throws SQLException, IOException {

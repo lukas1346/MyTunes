@@ -296,8 +296,8 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    private void OnFilterClick(ActionEvent actionEvent) {
-
+    private void OnFilterClick(ActionEvent actionEvent) throws SQLException, IOException {
+        songModel.searchSong(txtFilter.getText());
     }
 
     private void updatePlaylistInfo(Playlist playlist) {

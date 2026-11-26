@@ -9,6 +9,7 @@ import javafx.collections.transformation.FilteredList;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class SongModel {
     private SongManager songManager;
@@ -26,6 +27,12 @@ public class SongModel {
 
     public ObservableList<Song> getObservableSongs() {
         return observableSongs;
+    }
+
+    public void searchSong(String query) throws SQLException, IOException {
+        List<Song> searchResults = songManager.searchSongs(query);
+        observableSongs.clear();
+        observableSongs.addAll(searchResults);
     }
 
     public Song createSong(Song song) throws SQLException, IOException {
