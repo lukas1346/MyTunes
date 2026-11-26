@@ -291,7 +291,7 @@ public class MainViewController implements Initializable {
         lblCurrentArtist.setText(song.getArtist());
     }
 
-    public void onAddSongToPlaylist(ActionEvent actionEvent) {
+    public void onAddSongToPlaylistClick(ActionEvent actionEvent) {
         if (selectedPlaylist == null || selectedSong == null) {
             return;
         }

@@ -1,27 +1,26 @@
 package dk.sea.mytunes.gui.Controller;
 
 import dk.sea.mytunes.be.Song;
-import dk.sea.mytunes.bll.MusicPlayer;
-import dk.sea.mytunes.bll.util.TimeFormatter;
+import dk.sea.mytunes.bll.util.FileSaver;
 import dk.sea.mytunes.gui.Model.SongModel;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class SongViewController {
     public Label lblHeading;
@@ -35,19 +34,27 @@ public class SongViewController {
     private Song selectedSong;
     private SongModel songModel;
     private int songDurationInSeconds;
+    private File pendingAudioFile;
 
     public void onChooseClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Audio File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
+        File dataDir = new File("data");
+        if (dataDir.exists()) {
+            fileChooser.setInitialDirectory(dataDir);
+        }
 
         Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(window);
         if (selectedFile != null) {
-            txtFilePath.setText(selectedFile.getAbsolutePath());
-            TimeFormatter.getDurationInSeconds(selectedFile, seconds -> {
+            pendingAudioFile = selectedFile;
+            String relativePath = "data/" + selectedFile.getName();
+            txtFilePath.setText(relativePath);
+            txtTime.setText("Loading...");
+            FileSaver.getDurationInSeconds(selectedFile, seconds -> {
                 songDurationInSeconds = seconds;
-                txtTime.setText(TimeFormatter.formatSeconds(seconds));
+                txtTime.setText(formatSeconds(seconds));
             });
         }
     }
@@ -66,6 +73,10 @@ public class SongViewController {
         String artist = txtArtist.getText().trim();
         String category = txtCategory.getText().trim();
         String filePath = txtFilePath.getText().trim();
+
+        if (pendingAudioFile != null){
+            FileSaver.copyFileToDataDir(pendingAudioFile);
+        }
         if (isAddMode) {
             if (songModel.createSong(new Song(title, artist, category, songDurationInSeconds, filePath)) != null) {
                 closeWindow(actionEvent);
@@ -101,7 +112,7 @@ public class SongViewController {
         this.selectedSong = selectedSong;
         this.songModel = songModel;
 
-        if (isAddMode){
+        if (isAddMode) {
             lblHeading.setText("New Song");
         } else {
             lblHeading.setText("Edit Song");
@@ -110,7 +121,15 @@ public class SongViewController {
             txtCategory.setText(selectedSong.getCategory());
             txtFilePath.setText(selectedSong.getFilePath());
             this.songDurationInSeconds = selectedSong.getDuration();
-            txtTime.setText(TimeFormatter.formatSeconds(songDurationInSeconds));
+            txtTime.setText(formatSeconds(songDurationInSeconds));
         }
+    }
+    private String formatSeconds(int totalSeconds) {
+        if (totalSeconds < 0) {
+            totalSeconds = 0;
+        }
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
     }
 }
