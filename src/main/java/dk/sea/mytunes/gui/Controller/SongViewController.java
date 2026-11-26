@@ -4,6 +4,7 @@ import dk.sea.mytunes.be.Song;
 import dk.sea.mytunes.bll.util.FileSaver;
 import dk.sea.mytunes.gui.Model.SongModel;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -23,12 +24,12 @@ import java.sql.SQLException;
 import java.util.function.Consumer;
 
 public class SongViewController {
-    public Label lblHeading;
-    public TextField txtTitle;
-    public TextField txtArtist;
-    public TextField txtCategory;
-    public TextField txtTime;
-    public TextField txtFilePath;
+    @FXML private Label lblHeading;
+    @FXML private TextField txtTitle;
+    @FXML private TextField txtArtist;
+    @FXML private TextField txtCategory;
+    @FXML private TextField txtTime;
+    @FXML private TextField txtFilePath;
 
     private boolean isAddMode;
     private Song selectedSong;

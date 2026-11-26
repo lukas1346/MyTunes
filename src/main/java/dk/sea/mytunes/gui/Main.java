@@ -25,13 +25,4 @@ public class Main extends Application {
         stage.setMaximized(true);
         stage.show();
     }
-
-    public static void loadConfirmationView() throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("/dk/sea/mytunes/ConfirmationView.fxml")));
-        Stage stage = new Stage();
-        stage.setTitle("MyTunes");
-        stage.setScene(new Scene(root));
-        stage.centerOnScreen();
-        stage.show();
-    }
 }

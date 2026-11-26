@@ -21,6 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -109,12 +110,12 @@ public class MainViewController implements Initializable {
 
 
         sliderTime.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            double currentTime = (((double)newValue/1000)*musicModel.getCurrentSong().getDuration());
+            double currentTime = (((double) newValue / 1000) * musicModel.getCurrentSong().getDuration());
             musicModel.setTime(currentTime);
             lblCurrentSongTime.setText(formatDuration(currentTime));
         });
         sliderVolume.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            musicModel.setVolume((double)newValue);
+            musicModel.setVolume((double) newValue);
         });
 
         tblPlaylists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -176,7 +177,9 @@ public class MainViewController implements Initializable {
     private void onDeletePlaylistClick(ActionEvent actionEvent) {
         if (selectedPlaylist != null) {
             try {
-                playlistModel.deletePlaylist(selectedPlaylist);
+                if (showConfirmation(selectedPlaylist.getName())) {
+                    playlistModel.deletePlaylist(selectedPlaylist);
+                }
             } catch (SQLException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -228,7 +231,8 @@ public class MainViewController implements Initializable {
     private void onDeleteSongClick(ActionEvent actionEvent) {
         if (selectedSong != null) {
             try {
-                songModel.deleteSong(selectedSong);
+                if (showConfirmation(selectedSong.getTitle()))
+                    songModel.deleteSong(selectedSong);
             } catch (SQLException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -341,5 +345,19 @@ public class MainViewController implements Initializable {
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean showConfirmation(String itemToDelete) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/ConfirmationView.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        ConfirmationViewController controller = loader.getController();
+        controller.setContext(itemToDelete);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.showAndWait();
+        return controller.getIsConfirm();
     }
 }
