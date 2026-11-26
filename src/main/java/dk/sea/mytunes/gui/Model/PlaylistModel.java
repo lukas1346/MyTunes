@@ -47,6 +47,10 @@ public class PlaylistModel {
         observablePlaylists.remove(playlist);
     }
 
+    public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
+        playlistManager.addSongToPlaylist(playlist, song);
+    }
+
     public ObservableList<Song> getSongsInPlaylist(Playlist selectedPlaylist) throws SQLException, IOException {
         return FXCollections.observableArrayList(playlistManager.getSongsInPlaylist(selectedPlaylist.getPlaylistId()));
     }

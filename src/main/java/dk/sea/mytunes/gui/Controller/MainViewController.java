@@ -81,12 +81,14 @@ public class MainViewController implements Initializable {
 
     private Timeline timeline;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public MainViewController(){
         songModel = new SongModel();
         playlistModel = new PlaylistModel();
         musicModel = new MusicModel();
+    }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getSongs().size()).asObject()
@@ -111,7 +113,8 @@ public class MainViewController implements Initializable {
         });
 
         tblPlaylists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue != null) {
+            selectedPlaylist = newValue;
+            if (selectedPlaylist != null) {
                 loadPlaylistSongs(newValue);
 
             }
@@ -259,5 +262,16 @@ public class MainViewController implements Initializable {
 
     private void playSelectedSong(Song song) {
 
+    }
+
+    public void onAddSongToPlaylist(ActionEvent actionEvent) {
+        if (selectedPlaylist == null || selectedSong == null) {
+            return;
+        }
+        try {
+            playlistModel.addSongToPlaylist(selectedPlaylist, selectedSong);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

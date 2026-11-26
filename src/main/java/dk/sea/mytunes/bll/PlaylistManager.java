@@ -38,8 +38,9 @@ public class PlaylistManager {
         return playlistDAO.getSongsInPlaylist(playlistId);
     }
 
-    public void addSongToPlaylist(int playlistId, int songId) throws SQLException, IOException {
-        playlistDAO.addSongToPlaylist(playlistId, songId);
+    public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
+        playlistDAO.addSongToPlaylist(playlist.getPlaylistId(), song.getSongId());
+        playlist.getSongs().add(song);
     }
 
     public void removeSongFromPlaylist(int playlistId, int songId) throws SQLException, IOException {

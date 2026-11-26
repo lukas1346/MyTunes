@@ -233,7 +233,7 @@ public class PlaylistDAO implements IPlaylistDataAccess {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("Position");
+                return resultSet.getInt(1);
             }
         }
         return 0;
