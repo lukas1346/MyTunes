@@ -19,16 +19,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
+    @FXML
+    private ImageView imgPlayPause;
     @FXML
     private Label lblCurrentSongTime;
     @FXML
@@ -81,14 +86,12 @@ public class MainViewController implements Initializable {
 
     private Timeline timeline;
 
-    public MainViewController(){
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         songModel = new SongModel();
         playlistModel = new PlaylistModel();
         musicModel = new MusicModel();
-    }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getSongs().size()).asObject()
@@ -106,10 +109,12 @@ public class MainViewController implements Initializable {
 
 
         sliderTime.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-
+            double currentTime = (((double)newValue/1000)*musicModel.getCurrentSong().getDuration());
+            musicModel.setTime(currentTime);
+            lblCurrentSongTime.setText(formatDuration(currentTime));
         });
         sliderVolume.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-
+            musicModel.setVolume((double)newValue);
         });
 
         tblPlaylists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -143,12 +148,28 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNewPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(true, playlistModel, null);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml"));
+        Parent root = loader.load();
+        PlaylistViewController controller = loader.getController();
+        controller.setContext(true, playlistModel, null);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
     private void onEditPlaylistClick(ActionEvent actionEvent) throws Exception {
-        Main.loadPlaylistView(false, playlistModel, selectedPlaylist);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/PlaylistView.fxml"));
+        Parent root = loader.load();
+        PlaylistViewController controller = loader.getController();
+        controller.setContext(false, playlistModel, selectedPlaylist);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
@@ -179,12 +200,28 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNewSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(true, null, songModel);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/SongView.fxml"));
+        Parent root = loader.load();
+        SongViewController controller = loader.getController();
+        controller.setContext(true, null, songModel);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
     private void onEditSongClick(ActionEvent actionEvent) throws Exception {
-        Main.loadSongView(false, selectedSong, songModel);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/dk/sea/mytunes/SongView.fxml"));
+        Parent root = loader.load();
+        SongViewController controller = loader.getController();
+        controller.setContext(false, selectedSong, songModel);
+        Stage stage = new Stage();
+        stage.setTitle("MyTunes");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
@@ -206,14 +243,18 @@ public class MainViewController implements Initializable {
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
 
-        if (musicModel.isPlaying() && selectedSong == musicModel.getCurrentSong()) {
+        if (musicModel.isPlaying()) {
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
             musicModel.pause();
+        } else if (musicModel.getCurrentSong() != null && musicModel.getCurrentSong().equals(selectedSong)) {
+            musicModel.resume();
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         } else if (selectedSongInPlaylist != null) {
             playSelectedPlaylistSong(selectedSongInPlaylist);
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         } else if (selectedSong != null) {
             playSelectedSong(selectedSong);
-        } else {
-            musicModel.resume();
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         }
     }
 
