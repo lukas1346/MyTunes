@@ -16,10 +16,12 @@ public class MusicPlayer {
     private Consumer<Song> songChanged;
     private List<Song> playlistList;
     private int currentSongIndex;
+    private Song currentSong;
 
     public void playSong(Song song) {
         stopSong();
         try {
+            currentSong = song;
             File songFilePath = new File(song.getFilePath());
             Media mediaSong = new Media(songFilePath.toURI().toString());
             mediaPlayer = new MediaPlayer(mediaSong);
@@ -63,10 +65,7 @@ public class MusicPlayer {
     }
 
     public Song getCurrentSong() {
-        if (playlistList != null && currentSongIndex >= 0 && currentSongIndex < playlistList.size()) {
-            return playlistList.get(currentSongIndex);
-        }
-        return null;
+        return currentSong;
     }
 
     public void pause() {

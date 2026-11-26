@@ -22,6 +22,7 @@ public class Main extends Application {
         stage.setTitle("MyTunes");
         stage.setScene(new Scene(root));
         stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 
