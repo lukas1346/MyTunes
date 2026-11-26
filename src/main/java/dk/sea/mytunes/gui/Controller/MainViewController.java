@@ -90,7 +90,11 @@ public class MainViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         songModel = new SongModel();
-        playlistModel = new PlaylistModel();
+        try {
+            playlistModel = new PlaylistModel();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         musicModel = new MusicModel();
 
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -143,6 +147,7 @@ public class MainViewController implements Initializable {
 
         startSliderTime();
         tblPlaylists.setItems(playlistModel.getObservablePlaylists());
+        lstSongsInPlaylists.setItems(playlistModel.getObservableListSongsInPlaylist());
         tblSongs.setItems(songModel.getObservableSongs());
         lblSongAmount.setText(tblSongs.getItems().size() + " Songs");
     }
@@ -188,17 +193,40 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onMoveDownSongClick(ActionEvent actionEvent) {
-
+        if (selectedPlaylist == null || selectedSong == null) {
+            return;
+        }
+        try {
+            playlistModel.updateSongPosition(selectedPlaylist, selectedSong, false);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
     private void onMoveUpSongClick(ActionEvent actionEvent) {
-
+        if (selectedPlaylist == null || selectedSong == null) {
+            return;
+        }
+        try {
+            playlistModel.updateSongPosition(selectedPlaylist, selectedSong, true);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
     private void onDeleteSongPlaylist(ActionEvent actionEvent) {
-
+        if (selectedPlaylist == null || selectedSong == null) {
+            return;
+        }
+        try {
+            if (showConfirmation(selectedSong.getTitle())) {
+                playlistModel.removeSongFromPlaylist(selectedPlaylist, selectedSong);
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
@@ -329,7 +357,6 @@ public class MainViewController implements Initializable {
         if (song == null) {
             return;
         }
-
         musicModel.playSong(song);
 
         lblCurrentSongTitle.setText(song.getTitle());

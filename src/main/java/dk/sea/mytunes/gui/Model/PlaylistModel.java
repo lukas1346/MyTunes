@@ -12,11 +12,13 @@ import java.sql.SQLException;
 
 public class PlaylistModel {
     private ObservableList<Playlist> observablePlaylists;
+    private ObservableList<Song> observableListSongsInPlaylist;
     PlaylistManager playlistManager;
 
-    public PlaylistModel() {
+    public PlaylistModel() throws IOException {
         playlistManager = new PlaylistManager();
         observablePlaylists = FXCollections.observableArrayList();
+        observableListSongsInPlaylist = FXCollections.observableArrayList();
         try {
             observablePlaylists.addAll(playlistManager.getAllPlaylists());
         } catch (SQLException | IOException e) {
@@ -27,6 +29,7 @@ public class PlaylistModel {
     public ObservableList<Playlist> getObservablePlaylists() {
         return observablePlaylists;
     }
+    public ObservableList<Song> getObservableListSongsInPlaylist() {return observableListSongsInPlaylist;}
 
     public Playlist createPlaylist(Playlist playlist) throws SQLException, IOException {
         Playlist newPlaylist = playlistManager.createPlaylist(playlist);
@@ -49,11 +52,21 @@ public class PlaylistModel {
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
         playlistManager.addSongToPlaylist(playlist, song);
+        observableListSongsInPlaylist.add(song);
     }
 
     public ObservableList<Song> getSongsInPlaylist(Playlist selectedPlaylist) throws SQLException, IOException {
-        return FXCollections.observableArrayList(playlistManager.getSongsInPlaylist(selectedPlaylist.getPlaylistId()));
+        observableListSongsInPlaylist.setAll(playlistManager.getSongsInPlaylist(selectedPlaylist));
+        return observableListSongsInPlaylist;
     }
 
+    public void removeSongFromPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
+        playlistManager.removeSongFromPlaylist(playlist, song);
+        observableListSongsInPlaylist.remove(song);
+    }
 
+    public void updateSongPosition(Playlist playlist, Song song, boolean up) throws SQLException, IOException {
+        playlistManager.updateSongPosition(playlist, song, up);
+        getSongsInPlaylist(playlist);
+    }
 }

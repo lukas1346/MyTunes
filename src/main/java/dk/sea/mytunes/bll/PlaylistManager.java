@@ -14,7 +14,7 @@ public class PlaylistManager {
 
     private final IPlaylistDataAccess playlistDAO;
 
-    public PlaylistManager() {
+    public PlaylistManager() throws IOException {
         playlistDAO = new PlaylistDAO();
     }
 
@@ -34,8 +34,9 @@ public class PlaylistManager {
         playlistDAO.deletePlaylist(playlist);
     }
 
-    public List<Song> getSongsInPlaylist(int playlistId) throws SQLException, IOException {
-        return playlistDAO.getSongsInPlaylist(playlistId);
+    public List<Song> getSongsInPlaylist(Playlist playlist) throws SQLException, IOException {
+        playlist.setSongs(playlistDAO.getSongsInPlaylist(playlist.getPlaylistId()));
+        return playlist.getSongs();
     }
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
@@ -43,11 +44,16 @@ public class PlaylistManager {
         playlist.getSongs().add(song);
     }
 
-    public void removeSongFromPlaylist(int playlistId, int songId) throws SQLException, IOException {
-        playlistDAO.removeSongFromPlaylist(playlistId, songId);
+    public void removeSongFromPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
+        playlistDAO.removeSongFromPlaylist(playlist.getPlaylistId(), song.getSongId());
+        playlist.getSongs().removeIf(s -> s.getSongId() == song.getSongId());
     }
 
-    public void updateSongPosition(int playlistId, int songId, boolean up) throws SQLException, IOException {
-        playlistDAO.updateSongPosition(playlistId, songId, up);
+    public void updateSongPosition(Playlist playlist, Song song, boolean moveUp) throws SQLException, IOException {
+        int originalPosition = playlist.getSongs().indexOf(song) + 1;
+        if (originalPosition == 1 && moveUp) return;
+        if (originalPosition == playlist.getSongs().size() && !moveUp) return;
+        int positionToSwap = moveUp ? originalPosition - 1 : originalPosition + 1;
+        playlistDAO.swapSongs(playlist, originalPosition, positionToSwap, moveUp);
     }
 }

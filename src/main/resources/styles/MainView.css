@@ -146,7 +146,13 @@ Label{
     -fx-border-color: transparent;
 }
 
-.playlist-song-list .list-cell:selected {
+.playlist-songs-list .list-cell{
+    -fx-text-fill: #d0d5da;
+    -fx-background-color: transparent;
+    -fx-pref-height: 48px;
+}
+
+.playlist-songs-list .list-cell:selected {
     -fx-background-color: #243b31;
 }
 

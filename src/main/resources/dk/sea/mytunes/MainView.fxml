@@ -145,7 +145,7 @@
                   <ListView fx:id="lstSongsInPlaylists" prefHeight="558.0" prefWidth="356.0" styleClass="playlist-songs-list" VBox.vgrow="ALWAYS" />
                   <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="300.0" spacing="8.0" VBox.vgrow="SOMETIMES">
                      <children>
-                        <Button maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveDownSongClick" prefHeight="32.0" styleClass="secondary-btn">
+                        <Button maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveUpSongClick" prefHeight="32.0" styleClass="secondary-btn">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -154,7 +154,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button layoutX="10.0" layoutY="24.0" maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveUpSongClick" prefHeight="32.0" styleClass="secondary-btn">
+                        <Button layoutX="10.0" layoutY="24.0" maxWidth="32.0" mnemonicParsing="false" onAction="#onMoveDownSongClick" prefHeight="32.0" styleClass="secondary-btn">
                            <graphic>
                               <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
                                  <image>

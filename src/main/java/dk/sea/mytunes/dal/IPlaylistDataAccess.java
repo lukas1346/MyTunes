@@ -24,5 +24,5 @@ public interface IPlaylistDataAccess {
 
     void removeSongFromPlaylist(int playlistId, int songId) throws IOException, SQLException;
 
-    void updateSongPosition(int playlistId, int songId, boolean up) throws IOException, SQLException;
+    void swapSongs(Playlist playlist, int originalPosition, int positionToSwap, boolean moveUp) throws IOException, SQLException;
 }
