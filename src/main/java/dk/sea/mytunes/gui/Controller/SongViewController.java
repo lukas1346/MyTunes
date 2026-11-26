@@ -72,10 +72,10 @@ public class SongViewController {
         String title = txtTitle.getText().trim();
         String artist = txtArtist.getText().trim();
         String category = txtCategory.getText().trim();
-        String filePath = txtFilePath.getText().trim();
+        String filePath = "";
 
         if (pendingAudioFile != null){
-            FileSaver.copyFileToDataDir(pendingAudioFile);
+            filePath = FileSaver.copyFileToDataDir(pendingAudioFile);
         }
         if (isAddMode) {
             if (songModel.createSong(new Song(title, artist, category, songDurationInSeconds, filePath)) != null) {
