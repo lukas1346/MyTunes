@@ -116,25 +116,22 @@ public class MainViewController implements Initializable {
             selectedPlaylist = newValue;
             if (selectedPlaylist != null) {
                 loadPlaylistSongs(newValue);
-
             }
         });
 
         lstSongsInPlaylists.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
-            if (selectedSongInPlaylist == newValue) {
-                playSelectedPlaylistSong(selectedSongInPlaylist);
-            } else {
+            if (newValue != null) {
                 selectedSongInPlaylist = newValue;
+                selectedSong = newValue;
+                tblSongs.getSelectionModel().clearSelection();
             }
         }));
 
         tblSongs.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                if (selectedSong == newValue) {
-                    playSelectedSong(selectedSong);
-                } else {
-                    selectedSong = newValue;
-                }
+                selectedSong = newValue;
+                selectedSongInPlaylist = null;
+                lstSongsInPlaylists.getSelectionModel().clearSelection();
             }
         });
 
@@ -209,6 +206,15 @@ public class MainViewController implements Initializable {
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
 
+        if (musicModel.isPlaying() && selectedSong == musicModel.getCurrentSong()) {
+            musicModel.pause();
+        } else if (selectedSongInPlaylist != null) {
+            playSelectedPlaylistSong(selectedSongInPlaylist);
+        } else if (selectedSong != null) {
+            playSelectedSong(selectedSong);
+        } else {
+            musicModel.resume();
+        }
     }
 
     @FXML
@@ -235,7 +241,21 @@ public class MainViewController implements Initializable {
     }
 
     private void playSelectedPlaylistSong(Song song) {
+        if (song == null) {
+            return;
+        }
 
+        int index = lstSongsInPlaylists.getSelectionModel().getSelectedIndex();
+
+        if (index != -1) {
+            musicModel.playSongFromPlaylist(
+                    lstSongsInPlaylists.getItems(),
+                    index
+            );
+
+            lblCurrentSongTitle.setText(song.getTitle());
+            lblCurrentArtist.setText(song.getArtist());
+        }
     }
 
     private void startSliderTime() {
@@ -261,7 +281,14 @@ public class MainViewController implements Initializable {
     }
 
     private void playSelectedSong(Song song) {
+        if (song == null) {
+            return;
+        }
 
+        musicModel.playSong(song);
+
+        lblCurrentSongTitle.setText(song.getTitle());
+        lblCurrentArtist.setText(song.getArtist());
     }
 
     public void onAddSongToPlaylist(ActionEvent actionEvent) {
