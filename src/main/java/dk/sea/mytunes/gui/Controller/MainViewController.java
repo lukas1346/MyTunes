@@ -19,16 +19,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
+    @FXML
+    private ImageView imgPlayPause;
     @FXML
     private Label lblCurrentSongTime;
     @FXML
@@ -104,10 +109,12 @@ public class MainViewController implements Initializable {
 
 
         sliderTime.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-
+            double currentTime = (((double)newValue/1000)*musicModel.getCurrentSong().getDuration());
+            musicModel.setTime(currentTime);
+            lblCurrentSongTime.setText(formatDuration(currentTime));
         });
         sliderVolume.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-
+            musicModel.setVolume((double)newValue);
         });
 
         tblPlaylists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -203,14 +210,18 @@ public class MainViewController implements Initializable {
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
 
-        if (musicModel.isPlaying() && selectedSong == musicModel.getCurrentSong()) {
+        if (musicModel.isPlaying()) {
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
             musicModel.pause();
+        } else if (musicModel.getCurrentSong() != null && musicModel.getCurrentSong().equals(selectedSong)) {
+            musicModel.resume();
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         } else if (selectedSongInPlaylist != null) {
             playSelectedPlaylistSong(selectedSongInPlaylist);
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         } else if (selectedSong != null) {
             playSelectedSong(selectedSong);
-        } else {
-            musicModel.resume();
+            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
         }
     }
 
@@ -286,5 +297,9 @@ public class MainViewController implements Initializable {
 
         lblCurrentSongTitle.setText(song.getTitle());
         lblCurrentArtist.setText(song.getArtist());
+    }
+
+    @FXML
+    private void onAddSongToPlaylistClick(ActionEvent actionEvent) {
     }
 }
