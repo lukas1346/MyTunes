@@ -89,16 +89,14 @@ public class MainViewController implements Initializable {
     private boolean isUpdatingSlider = false;
     private boolean filtering = false;
 
+    public MainViewController() throws IOException {
+        songModel = new SongModel();
+        playlistModel = new PlaylistModel();
+        musicModel = new MusicModel();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        songModel = new SongModel();
-        try {
-            playlistModel = new PlaylistModel();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        musicModel = new MusicModel();
-
         musicModel.setOnSongChange(song -> {
             lblCurrentSongTitle.setText(song.getTitle());
             lblCurrentArtist.setText(song.getArtist());

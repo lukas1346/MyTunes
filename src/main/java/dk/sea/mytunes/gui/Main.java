@@ -1,11 +1,5 @@
 package dk.sea.mytunes.gui;
 
-import dk.sea.mytunes.be.Playlist;
-import dk.sea.mytunes.be.Song;
-import dk.sea.mytunes.gui.Controller.PlaylistViewController;
-import dk.sea.mytunes.gui.Controller.SongViewController;
-import dk.sea.mytunes.gui.Model.PlaylistModel;
-import dk.sea.mytunes.gui.Model.SongModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

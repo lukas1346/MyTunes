@@ -40,9 +40,7 @@ public class PlaylistManager {
     }
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
-        if (!playlist.getSongs().contains(song)) {
-            playlistDAO.addSongToPlaylist(playlist.getId(), song.getId());
-        }
+        playlistDAO.addSongToPlaylist(playlist.getId(), song.getId());
         playlist.getSongs().add(song);
     }
 
@@ -56,5 +54,12 @@ public class PlaylistManager {
         int positionToSwap = moveUp ? originalPosition - 1 : originalPosition + 1;
         if (originalPosition <= 0 || positionToSwap < 0 || positionToSwap > playlist.getSongs().size()) return;
         playlistDAO.swapSongPosition(playlist.getId(), originalPosition, positionToSwap);
+    }
+
+    public boolean songAlreadyInPlaylist(Playlist playlist, Song song) {
+        for (Song s : playlist.getSongs()) {
+            if (s.getId() == song.getId()) return true;
+        }
+        return false;
     }
 }

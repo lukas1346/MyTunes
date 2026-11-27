@@ -1,6 +1,5 @@
 package dk.sea.mytunes.gui.Model;
 
-import dk.sea.mytunes.be.Playlist;
 import dk.sea.mytunes.be.Song;
 import dk.sea.mytunes.bll.SongManager;
 import javafx.collections.FXCollections;
@@ -15,7 +14,7 @@ public class SongModel {
     private SongManager songManager;
     private ObservableList<Song> observableSongs;
 
-    public SongModel() {
+    public SongModel() throws IOException {
         songManager = new SongManager();
         observableSongs = FXCollections.observableArrayList();
         try {
@@ -52,9 +51,5 @@ public class SongModel {
     public void deleteSong(Song song) throws SQLException, IOException {
         songManager.deleteSong(song);
         observableSongs.remove(song);
-    }
-
-    public FilteredList<Song> searchSongs(String query) throws SQLException, IOException {
-        return (FilteredList<Song>) songManager.searchSongs(query);
     }
 }

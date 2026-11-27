@@ -9,12 +9,17 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SongDAO implements ISongDataAccess{
+    DBConnector dbConnector = new DBConnector();
+
+    public SongDAO() throws IOException {
+    }
+
     @Override
     public List<Song> getAllSongs() throws IOException, SQLException {
         String sql = "SELECT * FROM dbo.Songs";
         List<Song> songs = new ArrayList<>();
-        try (Connection connection = new DBConnector().getConnection()) {
-            Statement statement = connection.createStatement();
+        try (Connection connection = dbConnector.getConnection();
+            Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 songs.add(createSongFromResult(resultSet));
@@ -28,8 +33,8 @@ public class SongDAO implements ISongDataAccess{
     public Song createSong(Song song) throws SQLException, IOException {
         String sql = "INSERT INTO dbo.Songs (Title, Artist, Category, Duration, FilePath) VALUES(?, ?, ?, ?, ?)";
         Song createdSong = null;
-        try(Connection connection = new DBConnector().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        try(Connection connection = dbConnector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, song.getTitle());
             preparedStatement.setString(2, song.getArtist());
             preparedStatement.setString(3, song.getCategory());
@@ -57,8 +62,8 @@ public class SongDAO implements ISongDataAccess{
     @Override
     public void updateSong(Song song) throws SQLException, IOException {
         String sql = "UPDATE dbo.Songs SET Title = ?, Artist = ?, Category = ?, Duration = ?, FilePath = ? WHERE SongId = ?";
-        try(Connection connection = new DBConnector().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try(Connection connection = dbConnector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, song.getTitle());
             preparedStatement.setString(2, song.getArtist());
@@ -74,8 +79,8 @@ public class SongDAO implements ISongDataAccess{
     @Override
     public void deleteSong(Song song) throws IOException, SQLException {
         String sql = "DELETE FROM dbo.Songs WHERE SongId = ?";
-        try (Connection connection = new DBConnector().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, song.getId());
             preparedStatement.executeUpdate();
         }
@@ -85,8 +90,8 @@ public class SongDAO implements ISongDataAccess{
     public Song getSongById(Song song) throws IOException, SQLException {
         String sql = "SELECT * FROM dbo.Songs WHERE SongId = ?";
         Song songById = null;
-        try (Connection connection = new DBConnector().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = dbConnector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, song.getId());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

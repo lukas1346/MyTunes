@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 
 public class ConfirmationViewController {
     @FXML
-    private Label lblHeading;
-    @FXML
     private Label lblItemToDelete;
 
     private boolean isConfirm = false;

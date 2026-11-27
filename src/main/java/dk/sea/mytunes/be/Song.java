@@ -26,10 +26,6 @@ public class Song {
         return songId;
     }
 
-    public void setSongId(int songId) {
-        this.songId = songId;
-    }
-
     public String getTitle() {
         return title;
     }

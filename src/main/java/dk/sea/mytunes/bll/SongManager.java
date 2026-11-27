@@ -15,7 +15,7 @@ public class SongManager {
     private SongSearcher songSearcher = new SongSearcher();
     private final ISongDataAccess songDAO;
 
-    public SongManager() {
+    public SongManager() throws IOException {
         songDAO = new SongDAO();
     }
 

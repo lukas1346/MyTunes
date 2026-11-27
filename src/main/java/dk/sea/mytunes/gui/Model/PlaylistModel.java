@@ -3,13 +3,11 @@ package dk.sea.mytunes.gui.Model;
 import dk.sea.mytunes.be.Playlist;
 import dk.sea.mytunes.be.Song;
 import dk.sea.mytunes.bll.PlaylistManager;
-import dk.sea.mytunes.bll.SongManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 
 public class PlaylistModel {
@@ -56,8 +54,10 @@ public class PlaylistModel {
     }
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
-        playlistManager.addSongToPlaylist(playlist, song);
-        observableListSongsInPlaylist.add(song);
+        if (!playlistManager.songAlreadyInPlaylist(playlist, song)) {
+            playlistManager.addSongToPlaylist(playlist, song);
+            observableListSongsInPlaylist.add(song);
+        }
     }
 
     public ObservableList<Song> getSongsInPlaylist(Playlist selectedPlaylist) throws SQLException, IOException {
