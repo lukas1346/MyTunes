@@ -12,8 +12,6 @@ public interface ISongDataAccess {
 
     Song createSong(Song song) throws SQLException, IOException;
 
-    List<Song> searchSongs(String query) throws IOException, SQLException;
-
     void updateSong(Song song) throws SQLException, IOException;
 
     void deleteSong(Song song) throws IOException, SQLException;

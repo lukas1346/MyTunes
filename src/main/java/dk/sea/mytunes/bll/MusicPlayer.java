@@ -19,6 +19,11 @@ public class MusicPlayer {
     private Song currentSong;
 
     public void playSong(Song song) {
+        playlistList = null;
+        loadAndPlaySong(song);
+    }
+
+    private void loadAndPlaySong(Song song) {
         stopSong();
         try {
             currentSong = song;
@@ -43,7 +48,7 @@ public class MusicPlayer {
         if (playlist != null && !playlist.isEmpty() && index <= playlist.size() - 1 && index > -1) {
             playlistList = playlist;
             this.currentSongIndex = index;
-            playSong(playlist.get(index));
+            loadAndPlaySong(playlist.get(index));
         }
     }
 

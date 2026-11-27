@@ -98,6 +98,11 @@ public class MainViewController implements Initializable {
         }
         musicModel = new MusicModel();
 
+        musicModel.setOnSongChange(song -> {
+            lblCurrentSongTitle.setText(song.getTitle());
+            lblCurrentArtist.setText(song.getArtist());
+        });
+
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getSongs().size()).asObject()
@@ -192,7 +197,7 @@ public class MainViewController implements Initializable {
                     playlistModel.deletePlaylist(selectedPlaylist);
                 }
             } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
+                ErrorDisplay.displayError(e);
             }
         }
     }
@@ -207,7 +212,7 @@ public class MainViewController implements Initializable {
             playlistModel.moveSongPosition(selectedPlaylist, songToMove, false);
             highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -221,7 +226,7 @@ public class MainViewController implements Initializable {
             playlistModel.moveSongPosition(selectedPlaylist, selectedSong, true);
             highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -241,7 +246,7 @@ public class MainViewController implements Initializable {
                 playlistModel.removeSongFromPlaylist(selectedPlaylist, selectedSong);
             }
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -278,7 +283,7 @@ public class MainViewController implements Initializable {
                 if (showConfirmation(selectedSong.getTitle()))
                     songModel.deleteSong(selectedSong);
             } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
+                ErrorDisplay.displayError(e);
             }
         }
     }
@@ -290,7 +295,6 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
-
         if (musicModel.isPlaying()) {
             imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
             musicModel.pause();
@@ -324,7 +328,7 @@ public class MainViewController implements Initializable {
         try {
             lstSongsInPlaylists.setItems(playlistModel.getSongsInPlaylist(playlist));
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
         updatePlaylistInfo(playlist);
     }
@@ -337,13 +341,7 @@ public class MainViewController implements Initializable {
         int index = lstSongsInPlaylists.getSelectionModel().getSelectedIndex();
 
         if (index != -1) {
-            musicModel.playSongFromPlaylist(
-                    lstSongsInPlaylists.getItems(),
-                    index
-            );
-
-            lblCurrentSongTitle.setText(song.getTitle());
-            lblCurrentArtist.setText(song.getArtist());
+            musicModel.playSongFromPlaylist(lstSongsInPlaylists.getItems(), index);
         }
     }
 
@@ -376,13 +374,8 @@ public class MainViewController implements Initializable {
     }
 
     private void playSelectedSong(Song song) {
-        if (song == null) {
-            return;
-        }
+        if (song == null) {return;}
         musicModel.playSong(song);
-
-        lblCurrentSongTitle.setText(song.getTitle());
-        lblCurrentArtist.setText(song.getArtist());
     }
 
     public void onAddSongToPlaylistClick(ActionEvent actionEvent) {
@@ -392,7 +385,7 @@ public class MainViewController implements Initializable {
         try {
             playlistModel.addSongToPlaylist(selectedPlaylist, selectedSong);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 

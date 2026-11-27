@@ -55,29 +55,6 @@ public class SongDAO implements ISongDataAccess{
     }
 
     @Override
-    public List<Song> searchSongs(String query) throws IOException, SQLException {
-        if(!query.isEmpty()) {
-            List<Song> songsFound = new ArrayList<>();
-            String sql = "SELECT * FROM dbo.Songs WHERE Title LIKE ? OR Artist LIKE ? ORDER BY Title";
-            try (Connection connection = new DBConnector().getConnection()) {
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, "%" + query + "%");
-                preparedStatement.setString(2, "%" + query + "%");
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        songsFound.add(createSongFromResult(resultSet));
-                    }
-                }
-            }
-            return songsFound;
-        }
-        else {
-            return getAllSongs();
-        }
-    }
-
-    @Override
     public void updateSong(Song song) throws SQLException, IOException {
         String sql = "UPDATE dbo.Songs SET Title = ?, Artist = ?, Category = ?, Duration = ?, FilePath = ? WHERE SongId = ?";
         try(Connection connection = new DBConnector().getConnection()) {
