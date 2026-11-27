@@ -127,12 +127,24 @@ public class MusicPlayer {
     }
 
     public void playPrevious() {
-        if (currentSongIndex > 0) {
-            currentSongIndex--;
-            playSong(playlistList.get(currentSongIndex));
-        } else if (currentSongIndex == 0) {
-            currentSongIndex = playlistList.size() - 1;
-            playSong(playlistList.get(currentSongIndex));
+        if (playlistList != null && !playlistList.isEmpty()) {
+
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                loadAndPlaySong(playlistList.get(currentSongIndex));
+            } else if (currentSongIndex == 0) {
+                currentSongIndex = playlistList.size() - 1;
+                loadAndPlaySong(playlistList.get(currentSongIndex));
+            }
+        }
+        else if (allSongsList != null && !allSongsList.isEmpty()) {
+            if (currentAllSongsIndex > 0) {
+                currentAllSongsIndex--;
+                loadAndPlaySong(allSongsList.get(currentAllSongsIndex));
+            } else if (currentAllSongsIndex == 0) {
+                currentAllSongsIndex = allSongsList.size() - 1;
+                loadAndPlaySong(allSongsList.get(currentAllSongsIndex));
+            }
         }
     }
 
