@@ -297,18 +297,22 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
-        if (musicModel.isPlaying()) {
-            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
-            musicModel.pause();
-        } else if (musicModel.getCurrentSong() != null && musicModel.getCurrentSong().equals(selectedSong)) {
-            musicModel.resume();
-            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
-        } else if (selectedSongInPlaylist != null) {
-            playSelectedPlaylistSong(selectedSongInPlaylist);
-            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
-        } else if (selectedSong != null) {
-            playSelectedSong(selectedSong);
-            imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+        try {
+            if (musicModel.isPlaying()) {
+                imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
+                musicModel.pause();
+            } else if (musicModel.getCurrentSong() != null && musicModel.getCurrentSong().equals(selectedSong)) {
+                musicModel.resume();
+                imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+            } else if (selectedSongInPlaylist != null) {
+                playSelectedPlaylistSong(selectedSongInPlaylist);
+                imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+            } else if (selectedSong != null) {
+                playSelectedSong(selectedSong);
+                imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+            }
+        } catch (Exception e) {
+            ErrorDisplay.displayError(e);
         }
     }
 
