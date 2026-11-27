@@ -34,7 +34,7 @@ public class SongViewController {
     private boolean isAddMode;
     private Song selectedSong;
     private SongModel songModel;
-    private int songDurationInSeconds;
+    private long songDurationInMilliseconds;
     private File pendingAudioFile;
 
     public void onChooseClick(ActionEvent actionEvent) {
@@ -53,9 +53,9 @@ public class SongViewController {
             String relativePath = "data/" + selectedFile.getName();
             txtFilePath.setText(relativePath);
             txtTime.setText("Loading...");
-            FileSaver.getDurationInSeconds(selectedFile, seconds -> {
-                songDurationInSeconds = seconds;
-                txtTime.setText(formatSeconds(seconds));
+            FileSaver.getDurationInMilliseconds(selectedFile, milliseconds -> {
+                songDurationInMilliseconds = milliseconds;
+                txtTime.setText(formatMilliseconds(milliseconds));
             });
         }
     }
@@ -79,14 +79,14 @@ public class SongViewController {
             filePath = FileSaver.copyFileToDataDir(pendingAudioFile);
         }
         if (isAddMode) {
-            if (songModel.createSong(new Song(title, artist, category, songDurationInSeconds, filePath)) != null) {
+            if (songModel.createSong(new Song(title, artist, category, songDurationInMilliseconds, filePath)) != null) {
                 closeWindow(actionEvent);
             }
         } else {
             selectedSong.setTitle(title);
             selectedSong.setArtist(artist);
             selectedSong.setCategory(category);
-            selectedSong.setDuration(songDurationInSeconds);
+            selectedSong.setDuration(songDurationInMilliseconds);
             selectedSong.setFilePath(filePath);
             songModel.updateSong(selectedSong);
             closeWindow(actionEvent);
@@ -121,16 +121,15 @@ public class SongViewController {
             txtArtist.setText(selectedSong.getArtist());
             txtCategory.setText(selectedSong.getCategory());
             txtFilePath.setText(selectedSong.getFilePath());
-            this.songDurationInSeconds = selectedSong.getDuration();
-            txtTime.setText(formatSeconds(songDurationInSeconds));
+            this.songDurationInMilliseconds = selectedSong.getDuration();
+            txtTime.setText(formatMilliseconds(songDurationInMilliseconds));
         }
     }
-    private String formatSeconds(int totalSeconds) {
-        if (totalSeconds < 0) {
-            totalSeconds = 0;
-        }
-        int minutes = (totalSeconds % 3600) / 60;
-        int seconds = totalSeconds % 60;
-        return String.format("%d:%02d", minutes, seconds);
+    private String formatMilliseconds(long milliseconds) {
+        long minutes = milliseconds / 60000;
+        long seconds = (milliseconds % 60000) / 1000;
+        long millis = milliseconds % 1000;
+
+        return String.format("%d:%02d.%03d", minutes, seconds, millis);
     }
 }

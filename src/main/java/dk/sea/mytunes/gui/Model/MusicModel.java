@@ -46,12 +46,12 @@ public class MusicModel {
         return musicPlayer.getVolume();
     }
 
-    public double getCurrentTime() {
+    public long getCurrentTime() {
         return musicPlayer.getCurrentTime();
     }
 
-    public void setTime(double seconds) {
-        musicPlayer.setTime(seconds);
+    public void setTime(long milliseconds) {
+        musicPlayer.setTime(milliseconds);
     }
 
     public Song getCurrentSong() {

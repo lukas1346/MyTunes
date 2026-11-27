@@ -93,16 +93,16 @@ public class MusicPlayer {
         return 0;
     }
 
-    public double getCurrentTime() {
+    public long getCurrentTime() {
         if (mediaPlayer != null) {
-            return mediaPlayer.getCurrentTime().toSeconds();
+            return Math.round(mediaPlayer.getCurrentTime().toMillis());
         }
         return 0;
     }
 
-    public void setTime(double seconds) {
+    public void setTime(long milliseconds) {
         if (mediaPlayer != null) {
-            mediaPlayer.seek(Duration.seconds(seconds));
+            mediaPlayer.seek(Duration.millis(milliseconds));
         }
     }
 
@@ -116,18 +116,21 @@ public class MusicPlayer {
         }
     }
 
-    public void getTotalTime(String filePath, Consumer<Duration> callback) {
+    public void getTotalTime(String filePath, Consumer<Long> callback) {
         File songFilePath = new File(filePath);
-        Media mediaSong = new Media(songFilePath.toURI().toString());
-        MediaPlayer tempMedia = new MediaPlayer(mediaSong);
-
         if (!songFilePath.exists() || !songFilePath.isFile()) {
             System.out.println("File does not exist");
             return;
         }
 
+        Media mediaSong = new Media(songFilePath.toURI().toString());
+        MediaPlayer tempMedia = new MediaPlayer(mediaSong);
+
         tempMedia.setOnReady(() -> {
-            callback.accept(tempMedia.getTotalDuration());
+            long totalMilliseconds =
+                    Math.round(tempMedia.getTotalDuration().toMillis());
+
+            callback.accept(totalMilliseconds);
             tempMedia.dispose();
         });
 

@@ -126,7 +126,7 @@ public class PlaylistDAO implements IPlaylistDataAccess {
 
     @Override
     public void swapSongPosition(int playlistId, int originalPosition, int positionToSwapWith) throws IOException, SQLException {
-        String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND toPosition = ?";
+        String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND Position = ?";
         try (Connection connection = dbConnector.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             connection.setAutoCommit(false);

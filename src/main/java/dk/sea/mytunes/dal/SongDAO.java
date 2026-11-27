@@ -33,7 +33,7 @@ public class SongDAO implements ISongDataAccess{
             preparedStatement.setString(1, song.getTitle());
             preparedStatement.setString(2, song.getArtist());
             preparedStatement.setString(3, song.getCategory());
-            preparedStatement.setInt(4, song.getDuration());
+            preparedStatement.setDouble(4, song.getDuration());
             preparedStatement.setString(5, song.getFilePath());
 
             preparedStatement.executeUpdate();
@@ -86,7 +86,7 @@ public class SongDAO implements ISongDataAccess{
             preparedStatement.setString(1, song.getTitle());
             preparedStatement.setString(2, song.getArtist());
             preparedStatement.setString(3, song.getCategory());
-            preparedStatement.setInt(4, song.getDuration());
+            preparedStatement.setDouble(4, song.getDuration());
             preparedStatement.setString(5, song.getFilePath());
             preparedStatement.setInt(6, song.getId());
 

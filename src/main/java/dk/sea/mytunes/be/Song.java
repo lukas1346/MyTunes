@@ -6,10 +6,10 @@ public class Song {
     private String title;
     private String artist;
     private String category;
-    private int duration;
+    private long duration;
     private String filePath;
 
-    public Song(int songId, String title, String artist, String category, int duration, String filePath) {
+    public Song(int songId, String title, String artist, String category, long duration, String filePath) {
         this.songId = songId;
         this.title = title;
         this.artist = artist;
@@ -18,7 +18,7 @@ public class Song {
         this.filePath = filePath;
     }
 
-    public Song(String title, String artist, String category, int duration, String filePath) {
+    public Song(String title, String artist, String category, long duration, String filePath) {
         this(-1,title,artist,category, duration,filePath);
     }
 
@@ -55,16 +55,17 @@ public class Song {
     }
 
     public String formatDuration() {
-        int minutes = duration / 60;
-        int seconds = duration % 60;
+        long minutes = duration / 60000;
+        long seconds = (duration % 60000) / 1000;
+
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

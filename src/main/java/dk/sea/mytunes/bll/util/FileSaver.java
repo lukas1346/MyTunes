@@ -25,13 +25,18 @@ public class FileSaver {
         return DATA_DIR+"/"+selectedFile.getName();
     }
 
-    public static void getDurationInSeconds(File file, Consumer<Integer> onDurationReady) {
+    public static void getDurationInMilliseconds(File file, Consumer<Long> onDurationReady) {
         Media media = new Media(file.toURI().toString());
         MediaPlayer tempPlayer = new MediaPlayer(media);
 
         tempPlayer.setOnReady(() -> {
-            int seconds = (int) Math.round(media.getDuration().toSeconds());
-            onDurationReady.accept(seconds);
+            long milliseconds = Math.round(media.getDuration().toMillis());
+            onDurationReady.accept(milliseconds);
+            tempPlayer.dispose();
+        });
+
+        tempPlayer.setOnError(() -> {
+            System.out.println("Error loading audio: " + tempPlayer.getError());
             tempPlayer.dispose();
         });
     }

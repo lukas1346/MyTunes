@@ -86,6 +86,7 @@ public class MainViewController implements Initializable {
     private MusicModel musicModel;
 
     private Timeline timeline;
+    private boolean isUpdatingSlider = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -114,9 +115,14 @@ public class MainViewController implements Initializable {
 
 
         sliderTime.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            double currentTime = (((double) newValue / 1000) * musicModel.getCurrentSong().getDuration());
-            musicModel.setTime(currentTime);
-            lblCurrentSongTime.setText(formatDuration(currentTime));
+            if (!isUpdatingSlider && musicModel.getCurrentSong() != null) {
+                long totalTime = musicModel.getCurrentSong().getDuration();
+                long currentTime = Math.round(
+                        (newValue.doubleValue() / 1000) * totalTime
+                );
+                musicModel.setTime(currentTime);
+                lblCurrentSongTime.setText(formatDuration(currentTime));
+            }
         });
         sliderVolume.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             musicModel.setVolume((double) newValue);
@@ -343,23 +349,29 @@ public class MainViewController implements Initializable {
 
     private void startSliderTime() {
         timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), event -> {
+                new KeyFrame(Duration.millis(100), event -> {
                     if (musicModel.isPlaying()) {
-                        double totalTime = musicModel.getCurrentSong().getDuration();
-                        double currentTime = musicModel.getCurrentTime();
-                        sliderTime.setValue((currentTime / totalTime) * 1000);
+                        long totalTime = musicModel.getCurrentSong().getDuration();
+                        long currentTime = musicModel.getCurrentTime();
+                        isUpdatingSlider = true;
+                        sliderTime.setValue(
+                                ((double) currentTime / totalTime) * 1000
+                        );
+                        isUpdatingSlider = false;
                         lblCurrentSongTime.setText(formatDuration(currentTime));
                         lblTotalSongLength.setText(formatDuration(totalTime));
                     }
                 })
         );
+
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
-    public String formatDuration(double duration) {
-        int minutes = (int) duration / 60;
-        int seconds = (int) duration % 60;
+    public String formatDuration(long milliseconds) {
+        long minutes = milliseconds / 60000;
+        long seconds = (milliseconds % 60000) / 1000;
+
         return String.format("%02d:%02d", minutes, seconds);
     }
 
