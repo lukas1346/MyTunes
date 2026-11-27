@@ -87,6 +87,7 @@ public class MainViewController implements Initializable {
 
     private Timeline timeline;
     private boolean isUpdatingSlider = false;
+    private boolean filtering = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -291,7 +292,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onPreviousSongClick(ActionEvent actionEvent) {
-
+        musicModel.playPrevious();
     }
 
     @FXML
@@ -313,12 +314,21 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNextSongClick(ActionEvent actionEvent) {
-
+        musicModel.playNextSong();
     }
 
     @FXML
     private void OnFilterClick(ActionEvent actionEvent) throws SQLException, IOException {
-        songModel.searchSong(txtFilter.getText());
+        if(!filtering) {
+            songModel.searchSong(txtFilter.getText());
+            btnFilter.setText("Clear");
+            filtering = true;
+        }
+        else {
+            songModel.searchSong("");
+            btnFilter.setText("Filter");
+            filtering = false;
+        }
     }
 
     private void updatePlaylistInfo(Playlist playlist) {
