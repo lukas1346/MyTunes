@@ -87,7 +87,7 @@
             <HBox alignment="CENTER_RIGHT" prefHeight="84.0" prefWidth="290.0" spacing="8.0" HBox.hgrow="ALWAYS">
                <children>
                   <TextField fx:id="txtFilter" prefHeight="26.0" prefWidth="229.0" promptText="Filter by title or artist..." styleClass="filter-text-field" />
-                  <Button mnemonicParsing="false" onAction="#OnFilterClick" prefHeight="26.0" prefWidth="71.0" styleClass="primary-btn" text="Filter" />
+                  <Button fx:id="btnFilter" mnemonicParsing="false" onAction="#OnFilterClick" prefHeight="26.0" prefWidth="71.0" styleClass="primary-btn" text="Filter" />
                </children>
             </HBox>
          </children>

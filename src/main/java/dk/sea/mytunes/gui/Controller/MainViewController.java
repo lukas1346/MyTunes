@@ -87,6 +87,7 @@ public class MainViewController implements Initializable {
 
     private Timeline timeline;
     private boolean isUpdatingSlider = false;
+    private boolean filtering = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -97,6 +98,11 @@ public class MainViewController implements Initializable {
             throw new RuntimeException(e);
         }
         musicModel = new MusicModel();
+
+        musicModel.setOnSongChange(song -> {
+            lblCurrentSongTitle.setText(song.getTitle());
+            lblCurrentArtist.setText(song.getArtist());
+        });
 
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(cellData ->
@@ -155,6 +161,7 @@ public class MainViewController implements Initializable {
         tblPlaylists.setItems(playlistModel.getObservablePlaylists());
         lstSongsInPlaylists.setItems(playlistModel.getObservableListSongsInPlaylist());
         tblSongs.setItems(songModel.getObservableSongs());
+        musicModel.setAllSongsList(tblSongs.getItems());
         lblSongAmount.setText(tblSongs.getItems().size() + " Songs");
     }
 
@@ -192,7 +199,7 @@ public class MainViewController implements Initializable {
                     playlistModel.deletePlaylist(selectedPlaylist);
                 }
             } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
+                ErrorDisplay.displayError(e);
             }
         }
     }
@@ -207,7 +214,7 @@ public class MainViewController implements Initializable {
             playlistModel.moveSongPosition(selectedPlaylist, songToMove, false);
             highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -221,7 +228,7 @@ public class MainViewController implements Initializable {
             playlistModel.moveSongPosition(selectedPlaylist, selectedSong, true);
             highlightSelectedSong(songToMove);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -241,7 +248,7 @@ public class MainViewController implements Initializable {
                 playlistModel.removeSongFromPlaylist(selectedPlaylist, selectedSong);
             }
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 
@@ -278,19 +285,18 @@ public class MainViewController implements Initializable {
                 if (showConfirmation(selectedSong.getTitle()))
                     songModel.deleteSong(selectedSong);
             } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
+                ErrorDisplay.displayError(e);
             }
         }
     }
 
     @FXML
     private void onPreviousSongClick(ActionEvent actionEvent) {
-
+        musicModel.playPrevious();
     }
 
     @FXML
     private void onPlayPauseClick(ActionEvent actionEvent) {
-
         if (musicModel.isPlaying()) {
             imgPlayPause.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
             musicModel.pause();
@@ -308,12 +314,21 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void onNextSongClick(ActionEvent actionEvent) {
-
+        musicModel.playNextSong();
     }
 
     @FXML
     private void OnFilterClick(ActionEvent actionEvent) throws SQLException, IOException {
-        songModel.searchSong(txtFilter.getText());
+        if(!filtering) {
+            songModel.searchSong(txtFilter.getText());
+            btnFilter.setText("Clear");
+            filtering = true;
+        }
+        else {
+            songModel.searchSong("");
+            btnFilter.setText("Filter");
+            filtering = false;
+        }
     }
 
     private void updatePlaylistInfo(Playlist playlist) {
@@ -324,7 +339,7 @@ public class MainViewController implements Initializable {
         try {
             lstSongsInPlaylists.setItems(playlistModel.getSongsInPlaylist(playlist));
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
         updatePlaylistInfo(playlist);
     }
@@ -337,13 +352,7 @@ public class MainViewController implements Initializable {
         int index = lstSongsInPlaylists.getSelectionModel().getSelectedIndex();
 
         if (index != -1) {
-            musicModel.playSongFromPlaylist(
-                    lstSongsInPlaylists.getItems(),
-                    index
-            );
-
-            lblCurrentSongTitle.setText(song.getTitle());
-            lblCurrentArtist.setText(song.getArtist());
+            musicModel.playSongFromPlaylist(lstSongsInPlaylists.getItems(), index);
         }
     }
 
@@ -376,13 +385,8 @@ public class MainViewController implements Initializable {
     }
 
     private void playSelectedSong(Song song) {
-        if (song == null) {
-            return;
-        }
+        if (song == null) {return;}
         musicModel.playSong(song);
-
-        lblCurrentSongTitle.setText(song.getTitle());
-        lblCurrentArtist.setText(song.getArtist());
     }
 
     public void onAddSongToPlaylistClick(ActionEvent actionEvent) {
@@ -392,7 +396,7 @@ public class MainViewController implements Initializable {
         try {
             playlistModel.addSongToPlaylist(selectedPlaylist, selectedSong);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorDisplay.displayError(e);
         }
     }
 

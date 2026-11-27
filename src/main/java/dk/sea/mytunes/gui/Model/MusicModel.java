@@ -54,6 +54,10 @@ public class MusicModel {
         musicPlayer.setTime(milliseconds);
     }
 
+    public void setAllSongsList(List<Song> songs) {
+        musicPlayer.setAllSongsList(songs);
+    }
+
     public Song getCurrentSong() {
         return musicPlayer.getCurrentSong();
     }

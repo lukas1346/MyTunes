@@ -15,10 +15,20 @@ public class MusicPlayer {
     private boolean autoPlay = true;
     private Consumer<Song> songChanged;
     private List<Song> playlistList;
+    private List<Song> allSongsList;
     private int currentSongIndex;
+    private int currentAllSongsIndex;
     private Song currentSong;
 
     public void playSong(Song song) {
+        playlistList = null;
+        if (allSongsList != null) {
+            currentAllSongsIndex = allSongsList.indexOf(song);
+        }
+        loadAndPlaySong(song);
+    }
+
+    private void loadAndPlaySong(Song song) {
         stopSong();
         try {
             currentSong = song;
@@ -43,20 +53,30 @@ public class MusicPlayer {
         if (playlist != null && !playlist.isEmpty() && index <= playlist.size() - 1 && index > -1) {
             playlistList = playlist;
             this.currentSongIndex = index;
-            playSong(playlist.get(index));
+            loadAndPlaySong(playlist.get(index));
         }
     }
 
     public void playNextSong() {
-        if (playlistList == null) {
-            return;
-        }
-        if (currentSongIndex < playlistList.size() - 1) {
+        if (playlistList != null) {
+
             currentSongIndex++;
-            playSong(playlistList.get(currentSongIndex));
-        } else if (currentSongIndex == playlistList.size() - 1) {
-            currentSongIndex = 0;
-            playSong(playlistList.get(currentSongIndex));
+
+            if (currentSongIndex >= playlistList.size()) {
+                currentSongIndex = 0;
+            }
+
+            loadAndPlaySong(playlistList.get(currentSongIndex));
+
+        } else if (allSongsList != null && !allSongsList.isEmpty()) {
+
+            currentAllSongsIndex++;
+
+            if (currentAllSongsIndex >= allSongsList.size()) {
+                currentAllSongsIndex = 0;
+            }
+
+            playSong(allSongsList.get(currentAllSongsIndex));
         }
     }
 
@@ -138,6 +158,10 @@ public class MusicPlayer {
             System.out.println("Error loading song: " + tempMedia.getError());
             tempMedia.dispose();
         });
+    }
+
+    public void setAllSongsList(List<Song> songs) {
+        this.allSongsList = songs;
     }
 
     private void stopSong() {
