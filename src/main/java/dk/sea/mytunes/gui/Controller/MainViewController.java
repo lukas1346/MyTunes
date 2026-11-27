@@ -327,6 +327,7 @@ public class MainViewController implements Initializable {
         else {
             songModel.searchSong("");
             btnFilter.setText("Filter");
+            txtFilter.clear();
             filtering = false;
         }
     }
