@@ -160,6 +160,7 @@ public class MainViewController implements Initializable {
         tblPlaylists.setItems(playlistModel.getObservablePlaylists());
         lstSongsInPlaylists.setItems(playlistModel.getObservableListSongsInPlaylist());
         tblSongs.setItems(songModel.getObservableSongs());
+        musicModel.setAllSongsList(tblSongs.getItems());
         lblSongAmount.setText(tblSongs.getItems().size() + " Songs");
     }
 
