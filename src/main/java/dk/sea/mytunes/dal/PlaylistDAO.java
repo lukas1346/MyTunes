@@ -129,14 +129,11 @@ public class PlaylistDAO implements IPlaylistDataAccess {
         String sql = "UPDATE dbo.PlaylistSongs SET Position = ? WHERE PlaylistId = ? AND Position = ?";
         try (Connection connection = dbConnector.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            connection.setAutoCommit(false);
 
-            int tempPosition = getLastPosition(connection, playlistId);
+            int tempPosition = getLastPosition(connection, playlistId) + 1;
             updatePosition(ps, playlistId, originalPosition, tempPosition);
             updatePosition(ps, playlistId, positionToSwapWith, originalPosition);
             updatePosition(ps, playlistId, tempPosition, positionToSwapWith);
-
-            connection.commit();
         }
     }
 
@@ -144,6 +141,7 @@ public class PlaylistDAO implements IPlaylistDataAccess {
         ps.setInt(1, newPosition);
         ps.setInt(2, playlistId);
         ps.setInt(3, oldPosition);
+        int rowsUpdated = ps.executeUpdate();
     }
 
     private void reorderPlaylistSongs(Connection connection, int playlistId) throws IOException, SQLException {

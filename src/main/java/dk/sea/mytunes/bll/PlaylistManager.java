@@ -52,7 +52,7 @@ public class PlaylistManager {
     public void moveSong(Playlist playlist, Song song, boolean moveUp) throws SQLException, IOException {
         int originalPosition = playlist.getSongs().indexOf(song) + 1;
         int positionToSwap = moveUp ? originalPosition - 1 : originalPosition + 1;
-        if (originalPosition <= 0 || positionToSwap < 0 || positionToSwap >= playlist.getSongs().size()) return;
+        if (originalPosition <= 0 || positionToSwap < 0 || positionToSwap > playlist.getSongs().size()) return;
         playlistDAO.swapSongPosition(playlist.getId(), originalPosition, positionToSwap);
     }
 }
