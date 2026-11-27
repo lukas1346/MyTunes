@@ -23,7 +23,9 @@ public class PlaylistDAO implements IPlaylistDataAccess {
              Statement statement = connection.createStatement();) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                playlists.add(createPlaylistFromResult(resultSet));
+                Playlist newPlaylist = createPlaylistFromResult(resultSet);
+                newPlaylist.setSongs(getSongsInPlaylist(newPlaylist.getId()));
+                playlists.add(newPlaylist);
             }
         }
         playlists.sort(Comparator.comparing(Playlist::getName));

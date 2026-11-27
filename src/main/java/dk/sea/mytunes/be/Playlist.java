@@ -48,16 +48,13 @@ public class Playlist {
         this.songs = songs;
     }
 
-    public String calculatePlaylistDuration() {
-        int totalSeconds = 0;
+    public long calculatePlaylistDuration() {
+        long milliseconds = 0;
 
         for (Song song : songs) {
-            totalSeconds += song.getDuration();
+            milliseconds += song.getDuration();
         }
 
-        int minutes = totalSeconds / 60;
-        int seconds = totalSeconds % 60;
-
-        return String.format("%02d:%02d", minutes, seconds);
+        return milliseconds;
     }
 }

@@ -40,7 +40,9 @@ public class PlaylistManager {
     }
 
     public void addSongToPlaylist(Playlist playlist, Song song) throws SQLException, IOException {
-        playlistDAO.addSongToPlaylist(playlist.getId(), song.getId());
+        if (!playlist.getSongs().contains(song)) {
+            playlistDAO.addSongToPlaylist(playlist.getId(), song.getId());
+        }
         playlist.getSongs().add(song);
     }
 

@@ -109,7 +109,7 @@ public class MainViewController implements Initializable {
                 new SimpleIntegerProperty(cellData.getValue().getSongs().size()).asObject()
         );
         colPlaylistTime.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().calculatePlaylistDuration())
+                new SimpleStringProperty(formatDuration(cellData.getValue().calculatePlaylistDuration()))
         );
 
         colSongName.setCellValueFactory(new PropertyValueFactory<>("title"));
