@@ -78,6 +78,7 @@ public class PlaylistModel {
             return;
         }
         playlistManager.moveSong(playlist, song, up);
+        Collections.swap(playlist.getSongs(), index, indexToSwapWith);
         Collections.swap(observableListSongsInPlaylist, index, indexToSwapWith);
     }
 }
