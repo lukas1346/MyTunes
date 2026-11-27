@@ -230,7 +230,7 @@ public class MainViewController implements Initializable {
         }
     }
 
-    private void highlightSelectedSong(Song songToMove){
+    private void highlightSelectedSong(Song songToMove) {
         int newIndex = lstSongsInPlaylists.getItems().indexOf(songToMove);
         lstSongsInPlaylists.getSelectionModel().clearSelection();
         lstSongsInPlaylists.getSelectionModel().select(newIndex);
@@ -242,9 +242,7 @@ public class MainViewController implements Initializable {
             return;
         }
         try {
-            if (showConfirmation(selectedSong.getTitle())) {
-                playlistModel.removeSongFromPlaylist(selectedPlaylist, selectedSong);
-            }
+            playlistModel.removeSongFromPlaylist(selectedPlaylist, selectedSong);
         } catch (SQLException | IOException e) {
             ErrorDisplay.displayError(e);
         }
@@ -321,12 +319,11 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void OnFilterClick(ActionEvent actionEvent) throws SQLException, IOException {
-        if(!filtering) {
+        if (!filtering) {
             songModel.searchSong(txtFilter.getText());
             btnFilter.setText("Clear");
             filtering = true;
-        }
-        else {
+        } else {
             songModel.searchSong("");
             btnFilter.setText("Filter");
             txtFilter.clear();
@@ -388,7 +385,9 @@ public class MainViewController implements Initializable {
     }
 
     private void playSelectedSong(Song song) {
-        if (song == null) {return;}
+        if (song == null) {
+            return;
+        }
         musicModel.playSong(song);
     }
 

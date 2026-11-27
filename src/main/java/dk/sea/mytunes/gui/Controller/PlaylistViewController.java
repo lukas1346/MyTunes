@@ -23,7 +23,6 @@ public class PlaylistViewController implements Initializable {
 
     private PlaylistModel playlistModel;
     private Playlist selectedPlaylist;
-    // boolean to determine whether the user is adding a song or editing a song.
     private boolean isAddMode;
 
     public PlaylistViewController() {

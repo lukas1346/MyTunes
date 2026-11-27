@@ -108,7 +108,7 @@ Label {
 
 .card .card-title {
     -fx-text-fill: -muted-text-color;
-    -fx-font-size: 20px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-letter-spacing: 1px;
 }
